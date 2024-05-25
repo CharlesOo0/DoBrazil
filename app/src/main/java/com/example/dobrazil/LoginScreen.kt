@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -37,7 +35,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
@@ -54,13 +51,14 @@ fun LoginScreen() {
     Column (
         modifier = Modifier // Fill the screen
             .fillMaxSize()
+            .background(Color(GreenVariantColor))
     ){
 
         /*------------------------------- TOP of the screen -------------------------------*/
         Row (
             modifier = Modifier // Fill the width and set up a background color
                 .fillMaxWidth()
-                .background(Color(0xFF05944F)),
+                .background(Color(GreenVariantColor)),
         ){ // Top part of the screen where the logo is displayed
             // Display the logo of the app
             Image(
@@ -72,7 +70,7 @@ fun LoginScreen() {
             )
         }
 
-        BottomBorder(width = 6.dp, color = Color(0xFFb3b3a2)) // Display a bottom border
+        BottomBorder(width = 6.dp, color = Color(IvoryBorderColor)) // Display a bottom border
 
         /*------------------------------- MIDDLE of the screen -------------------------------*/
 
@@ -80,7 +78,7 @@ fun LoginScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier // Fill the width and set up a background color
                 .fillMaxWidth()
-                .background(Color(0xFFDFDFCB)),
+                .background(Color(IvoryColor)),
         ){ // Bottom part of the screen where the login / register form is displayed
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
 
@@ -140,7 +138,7 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
         }
 
-        BottomBorder(width = 6.dp, color = Color(0xFFb3b3a2)) // Display a bottom border
+        BottomBorder(width = 6.dp, color = Color(IvoryBorderColor)) // Display a bottom border
 
         /*------------------------------- BOTTOM of the screen -------------------------------*/
 
@@ -148,7 +146,7 @@ fun LoginScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF05944F))
+                .background(Color(GreenVariantColor))
         ) { // Column where there is the sign in / sign up button
 
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button
@@ -177,8 +175,6 @@ fun LoginScreen() {
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds // This will stretch the image to fill all available space
                 )
-            }else {
-                BottomBorder(width = 1000.dp, color = Color(0xFF05944F))
             }
         }
     }
@@ -208,15 +204,15 @@ fun InputField(label: String, onValueChange: (String) -> Unit, isPassword: Boole
         label = { Text(label) }, // Label of the input field
         colors = OutlinedTextFieldDefaults.colors(  // Colors of the input field
             // Color when the input field is unfocused
-            unfocusedTextColor = Color(0xFF195036),
-            unfocusedBorderColor = Color(0xFF195036),
-            unfocusedLabelColor = Color(0xFF195036),
+            unfocusedTextColor = Color(InputFieldGreen),
+            unfocusedBorderColor = Color(InputFieldGreen),
+            unfocusedLabelColor = Color(InputFieldGreen),
             unfocusedLeadingIconColor = Color.Black,
 
             // Color when the input field is focused
-            focusedTextColor = Color(0xFF5B4527),
-            focusedBorderColor = Color(0xFF5B4527),
-            focusedLabelColor = Color(0xFF5B4527),
+            focusedTextColor = Color(InputFieldBrown),
+            focusedBorderColor = Color(InputFieldBrown),
+            focusedLabelColor = Color(InputFieldBrown),
             focusedLeadingIconColor = Color.Yellow,
         ),
         shape = RoundedCornerShape(40.dp), // Shape of the input field
@@ -252,18 +248,18 @@ fun InputField(label: String, onValueChange: (String) -> Unit, isPassword: Boole
  * @param borderColor : Color : the color of the border of the button
  */
 @Composable
-fun CustomButton(onClick: () -> Unit, text: String, contentColor : Color = Color(0xFF195036), containerColor : Color = Color(0xFFDFDFCB), borderColor : Color = Color(0xFF195036)) {
+fun CustomButton(onClick: () -> Unit, text: String, contentColor : Color = Color(InputFieldGreen), containerColor : Color = Color(IvoryColor), borderColor : Color = Color(InputFieldGreen)) {
 
     Button(
         onClick = onClick,
-        border = BorderStroke(3.dp, borderColor),
+        border = BorderStroke(3.dp, borderColor), // Border of the button
         colors = buttonColors(
-            containerColor = containerColor,
-            contentColor = contentColor
+            containerColor = containerColor, // Color of the button
+            contentColor = contentColor // Color of the text of the button
         ),
-        shape = RoundedCornerShape(40.dp)
+        shape = RoundedCornerShape(40.dp) // Shape of the button
     ) {
-        Text(text = text)
+        Text(text = text) // Text of the button
     }
 }
 
@@ -285,7 +281,7 @@ fun BottomBorder(width: Dp = 2.dp, color: Color = Color.Red) {
 }
 
 /**
- * @brief Composable qui permet de prévisualiser l'écran de login / register
+ * @brief Composable that allow to preview the login screen
  */
 @Preview(showBackground = true)
 @Composable
