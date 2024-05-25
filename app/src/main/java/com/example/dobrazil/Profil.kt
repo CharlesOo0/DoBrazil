@@ -21,11 +21,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
@@ -33,9 +31,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -46,7 +45,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 /**
- * @brief Composable that allow to the profil page
+ * @brief Composable that allow to modelise the profil page
  */
 @Composable
 fun Profil() {
@@ -132,6 +131,9 @@ fun Profil() {
             // Button to show the your favorite people
             CategorieButton(onClick = {page.value = 2}, R.drawable.categorie_favorite, Modifier.weight(1f))
 
+            // Button to show the your favorite people
+            CategorieButton(onClick = {page.value = 3}, R.drawable.categorie_invitation, Modifier.weight(1f))
+
             // they are all weighted to take the same space
         }
 
@@ -147,13 +149,55 @@ fun Profil() {
         ){
             if (page.value == 0) { // If the user want to see the event that are made by him / coming soon
                 for (i in 0..10) {
-                    People()
+                    Event()
                     Spacer(modifier = Modifier.padding(8.dp))
                 }
             } else if (page.value == 1) { // If the user want to see the event that are made by him / currently
                 Event()
-            } else { // If the user want to see the favorite people
-                People()
+            } else if (page.value == 2 ) { // If the user want to see the favorite people
+                for (i in 0..10) {
+                    People()
+                    Spacer(modifier = Modifier.padding(8.dp))
+                }
+            } else {
+                Invitation()
+            }
+
+        }
+    }
+}
+
+/**
+ * @brief Composable that modelise an invitation to an Event
+ * @param eventId : Int that represent the id of the event
+ */
+@Composable
+fun Invitation(eventId: Int = 0) {
+    Column ( // Row that contains the element of the event
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .border(4.dp, Color(GreenVariantStrongColor)) // Add a border to the row
+            .background(Color(GreenVariantColor)) // Background color of the row
+            .fillMaxWidth() // Fill the entire width of the screen
+            .padding(8.dp)  // Add a padding to the row
+    ){
+        Text("You are invited to an event") // Text that show that the user is invited to an event
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Event(eventId, false) // Show the event that the user is invited to
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Row {
+            Button(onClick = { /* TODO */ }) { // Button to accept the invitation
+                Text("Accept") // Text of the button
+            }
+
+            Spacer(modifier = Modifier.padding(8.dp))
+
+            Button(onClick = { /* TODO */ }) { // Button to refuse the invitation
+                Text("Deny") // Text of the button
             }
 
         }
@@ -177,87 +221,6 @@ fun CategorieButton(onClick: () -> Unit, categorieIcon: Int, modifier: Modifier 
     )
 }
 
-/**
- * @brief Composable that modelise an event
- * @param eventId : Int that represent the id of the event
- */
-@Composable
-fun Event(eventId: Int = 0) {
-    Row ( // Row that contains the element of the event
-        modifier = Modifier
-            .border(4.dp, Color(GreenVariantStrongColor)) // Add a border to the row
-            .background(Color(GreenVariantColor)) // Background color of the row
-            .fillMaxWidth() // Fill the entire width of the screen
-            .padding(8.dp)  // Add a padding to the row
-            .height(200.dp) // Height of the row
-    ){
-        Column ( // Column that contains the element the picture of the event
-            modifier = Modifier
-                .fillMaxWidth(0.35f)
-                .fillMaxHeight()
-                .padding(4.dp)
-        ){
-            Image(
-                painter = painterResource(R.drawable.event_default_pfp), // Image of the event
-                /* TODO Remplacer par l'image de l'événement */
-                contentDescription = "",
-                contentScale = ContentScale.FillBounds, // Fill the entire space of the image
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp)) // Clip the image to a rounded corner
-                    .border(2.dp, Color(GreenVariantStrongColor), RoundedCornerShape(8.dp)) // Add a border to the image
-            )
-
-        }
-
-        Column ( // Column that contains the element descripting the event
-            verticalArrangement = Arrangement.SpaceEvenly, // Space the element inside evenly
-            modifier = Modifier
-                .fillMaxSize() // Fill the entire size of the column
-                .fillMaxHeight()
-        ){
-            Row( // Row that contains the name, location and number of person of the event
-                horizontalArrangement = Arrangement.SpaceEvenly, // Space the element inside evenly
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.15f)
-            ){
-                Text("XXX") // Name of the event
-                /* TODO Remplacer par le nom de l'événement */
-                Text("Lieu") // Location of the event
-                /* TODO Remplacer par le lieu de l'événement */
-                Text("X pers.") // Number of person that are going to the event
-                /* TODO Remplacer par le nombre de personne qui vont à l'événement */
-                Box {
-                    DropDownMenu()
-                }
-            }
-
-            Row ( // Row that contains the description of the event
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.85f)
-                    .border(1.dp, Color(GreenVariantStrongColor))
-            ){
-                Text("Description") // Description of the event
-                /* TODO Remplacer par la description de l'événement */
-            }
-
-            Row ( // Row that contains the date of the event
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ){
-                Text("Date de début") // Date of the beginning of the event
-                /* TODO Remplacer par la date de début de l'événement */
-                Text("Date de fin") // Date of the end of the event
-                /* TODO Remplacer par la date de fin de l'événement */
-            }
-        }
-    }
-
-}
 
 /**
  * @brief Composable that moodelise people that you put in favorite
@@ -281,7 +244,11 @@ fun People(peopleId: Int = 0) {
                 contentScale = ContentScale.FillBounds, // Fill the entire space of the image
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp)) // Clip the image to a rounded corner
-                    .border(2.dp, Color(GreenVariantStrongColor), RoundedCornerShape(8.dp)) // Add a border to the image
+                    .border(
+                        2.dp,
+                        Color(GreenVariantStrongColor),
+                        RoundedCornerShape(8.dp)
+                    ) // Add a border to the image
                     .size(70.dp)
         )
 
@@ -292,50 +259,6 @@ fun People(peopleId: Int = 0) {
             DropDownMenu()
         }
 
-    }
-}
-
-
-/**
- * @brief Composable that modelise a DropDownMenu
- * @param isCreator : Boolean that represent if the user is the creator of the event
- * @param isEvent : Boolean that represent if the dropDownMenu is for an event
- */
-@Composable
-fun DropDownMenu(isCreator : Boolean = false, isEvent : Boolean = true) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box { // Box that contains the DropDownMenu
-        IconButton(onClick = { expanded = !expanded }) { // Button that show the DropDownMenu
-            Icon( // Icon of the button
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "More"
-            )
-        }
-
-        DropdownMenu( // DropDownMenu that is shown when the button is clicked
-            expanded = expanded,
-            onDismissRequest = { expanded = false } // Dismiss the DropDownMenu when the user click outside of it
-        ) {
-            if (isEvent) { // If the DropDownMenu is for an event
-                if (isCreator) {  // If the user is the creator of the event
-                    DropdownMenuItem( // Show the option to manage the event
-                        text = { Text("Gerer") },
-                        onClick = { /* TODO */ }
-                    )
-                }
-                DropdownMenuItem( // Show the option to delete/quit the event
-                    text = { Text("Supprimer/Quitter") },
-                    onClick = { /* TODO */ }
-                )
-            } else {
-                DropdownMenuItem( // Show the option to delete the people from the favorite
-                    text = { Text("Supprimer") },
-                    onClick = { /* TODO */ }
-                )
-            }
-
-        }
     }
 }
 
