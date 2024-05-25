@@ -1,0 +1,296 @@
+package com.example.dobrazil
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.dobrazil.ui.theme.DoBrazilTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
+
+
+/**
+ * @brief Composable that allow to modelize the login / register screen
+ */
+@Composable
+fun LoginScreen() {
+    val isLogin = remember { mutableStateOf(true) }
+
+    Column (
+        modifier = Modifier // Fill the screen
+            .fillMaxSize()
+    ){
+
+        /*------------------------------- TOP of the screen -------------------------------*/
+        Row (
+            modifier = Modifier // Fill the width and set up a background color
+                .fillMaxWidth()
+                .background(Color(0xFF05944F)),
+        ){ // Top part of the screen where the logo is displayed
+            // Display the logo of the app
+            Image(
+                painter = painterResource(id = R.drawable.logo_do_brazil),
+                contentDescription = "Logo Do Brazil",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+        }
+
+        BottomBorder(width = 6.dp, color = Color(0xFFb3b3a2)) // Display a bottom border
+
+        /*------------------------------- MIDDLE of the screen -------------------------------*/
+
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier // Fill the width and set up a background color
+                .fillMaxWidth()
+                .background(Color(0xFFDFDFCB)),
+        ){ // Bottom part of the screen where the login / register form is displayed
+            Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
+
+            if (isLogin.value) { // If we are in login mode
+                val username = remember { mutableStateOf("") }
+                val password = remember { mutableStateOf("") }
+
+                InputField( // Input field for the username
+                    label = "Username",
+                    onValueChange = { newValue -> username.value = newValue },
+                    isPassword = false,
+                    icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Email icon") }
+                )
+
+                InputField( // Input field for the password
+                    label = "Password",
+                    onValueChange = { newValue -> password.value = newValue },
+                    isPassword = true,
+                    icon = { Icon(Icons.Default.Lock, contentDescription = "Email icon") }
+                )
+
+            }else {
+                // Define the state for each input field
+                val username = remember { mutableStateOf("") }
+                val email = remember { mutableStateOf("") }
+                val password = remember { mutableStateOf("") }
+                val confirmPassword = remember { mutableStateOf("") }
+
+                InputField( // Input field for the username
+                    label = "Username",
+                    onValueChange = { newValue -> username.value = newValue },
+                    isPassword = false,
+                    icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Email icon") }
+                )
+
+                InputField( // Input field for the email
+                    label = "Email",
+                    onValueChange = { newValue -> email.value = newValue },
+                    isPassword = false,
+                    icon = { Icon(Icons.Default.Email, contentDescription = "Email icon") }
+                )
+
+                InputField( // Input field for the password
+                    label = "Password",
+                    onValueChange = { newValue -> password.value = newValue },
+                    isPassword = true,
+                    icon = { Icon(Icons.Default.Lock, contentDescription = "Email icon") }
+                )
+
+                InputField( // Input field for the password confirmation
+                    label = "Confirm password",
+                    onValueChange = { newValue -> confirmPassword.value = newValue },
+                    isPassword = true,
+                    icon = { Icon(Icons.Default.Lock, contentDescription = "Email icon") }
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
+        }
+
+        BottomBorder(width = 6.dp, color = Color(0xFFb3b3a2)) // Display a bottom border
+
+        /*------------------------------- BOTTOM of the screen -------------------------------*/
+
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF05944F))
+        ) { // Column where there is the sign in / sign up button
+
+            Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button
+
+            if (isLogin.value) { // If we are in login mode
+                CustomButton(onClick = { /*TODO*/ }, text = "Sign in")
+            } else {
+                CustomButton(onClick = { /*TODO*/ }, text = "Sign up")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button
+
+            if (isLogin.value) { // If we are in login mode
+                CustomButton(onClick = { isLogin.value = false }, text = "Sign up ?")
+
+            } else {
+                CustomButton(onClick = { isLogin.value = true }, text = "Sign in ?")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
+
+            if (isLogin.value) { // If we are in login mode
+                Image(
+                    painter = painterResource(id = R.drawable.lac_do_brazil),
+                    contentDescription = "Lac Do Brazil",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds // This will stretch the image to fill all available space
+                )
+            }else {
+                BottomBorder(width = 1000.dp, color = Color(0xFF05944F))
+            }
+        }
+    }
+
+}
+
+/**
+ * @brief Composable that permit to implement our input fields
+ * @param label : String : the label of the input field
+ * @param onValueChange : (String) -> Unit : the function that will be called when the value of the input field change
+ * @param isPassword : Boolean : true if the input field is a password field, false otherwise
+ * @param icon : Icons : the icon that will be displayed in the input field
+ * @param width : Float : the width of the input field
+ */
+@Composable
+fun InputField(label: String, onValueChange: (String) -> Unit, isPassword: Boolean, icon: (@Composable () -> Unit)? = null, width: Float = 0.7f) {
+    val passwordVisibility = remember { mutableStateOf(false) }
+    val inputValue = remember { mutableStateOf("") }
+
+    OutlinedTextField (
+        leadingIcon = icon, // Icon of the input field
+        value = inputValue.value, // Value of the input field
+        onValueChange = { newValue -> // Function that will be called when the value of the input field change
+            inputValue.value = newValue
+            onValueChange(newValue)
+        },
+        label = { Text(label) }, // Label of the input field
+        colors = OutlinedTextFieldDefaults.colors(  // Colors of the input field
+            // Color when the input field is unfocused
+            unfocusedTextColor = Color(0xFF195036),
+            unfocusedBorderColor = Color(0xFF195036),
+            unfocusedLabelColor = Color(0xFF195036),
+            unfocusedLeadingIconColor = Color.Black,
+
+            // Color when the input field is focused
+            focusedTextColor = Color(0xFF5B4527),
+            focusedBorderColor = Color(0xFF5B4527),
+            focusedLabelColor = Color(0xFF5B4527),
+            focusedLeadingIconColor = Color.Yellow,
+        ),
+        shape = RoundedCornerShape(40.dp), // Shape of the input field
+        modifier = Modifier
+            .fillMaxWidth(width)
+            .padding(8.dp),
+
+        // Visual transformation of the input field if it is a password field
+        // If the input field is a password field and the passwordVisibility is false, the text will be hidden
+        visualTransformation = if (isPassword && !passwordVisibility.value) PasswordVisualTransformation() else VisualTransformation.None,
+
+        // Trailing icon of the input field
+        trailingIcon = {
+            if (isPassword) { // If the input field is a password field
+                IconButton(onClick = { passwordVisibility.value = !passwordVisibility.value }) { // Button to show / hide the password
+                    Icon( // Icon to show / hide the password
+                        imageVector = if (passwordVisibility.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription = if (passwordVisibility.value) "Hide password" else "Show password"
+                    )
+                }
+            }
+        }
+    )
+}
+
+
+/**
+ * @brief Composable that allow to make custom button
+ * @param onClick : () -> Unit : the function that will be called when the button is clicked
+ * @param text : String : the text of the button
+ * @param contentColor : Color : the color of the text of the button
+ * @param containerColor : Color : the color of the button
+ * @param borderColor : Color : the color of the border of the button
+ */
+@Composable
+fun CustomButton(onClick: () -> Unit, text: String, contentColor : Color = Color(0xFF195036), containerColor : Color = Color(0xFFDFDFCB), borderColor : Color = Color(0xFF195036)) {
+
+    Button(
+        onClick = onClick,
+        border = BorderStroke(3.dp, borderColor),
+        colors = buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        shape = RoundedCornerShape(40.dp)
+    ) {
+        Text(text = text)
+    }
+}
+
+/**
+ * @brief Composable that allow to make bottom border
+ * @param width : Dp : the width of the border
+ * @param color : Color : the color of the border
+ */
+@Composable
+fun BottomBorder(width: Dp = 2.dp, color: Color = Color.Red) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(width) // This is the thickness of the border
+            .background(color) // This is the color of the border
+    ) {
+        Spacer(Modifier.fillMaxSize())
+    }
+}
+
+/**
+ * @brief Composable qui permet de prévisualiser l'écran de login / register
+ */
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    DoBrazilTheme {
+        LoginScreen()
+    }
+}
