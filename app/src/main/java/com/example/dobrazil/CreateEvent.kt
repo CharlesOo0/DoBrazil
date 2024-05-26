@@ -20,9 +20,13 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -86,6 +90,7 @@ fun CreateEvent() {
             val dateStart = remember { mutableStateOf("") } // Start date of the event
             val dateEnd = remember { mutableStateOf("") } // End date of the event
             val private = remember { mutableStateOf(false) } // Private event
+            val inviteFavoritePerson = remember { mutableStateOf(false) } // Invite favorite person
 
             // Input field for the title
             CustomInputField(textState = title, label = "Title", icon = { Icon(Icons.Default.Title, contentDescription = "Title icon") })
@@ -119,6 +124,17 @@ fun CreateEvent() {
                 BooleanInputField(private) // Boolean input field for the privacy
             }
 
+            Row(
+                modifier = Modifier.fillMaxWidth(), // Full width
+                horizontalArrangement = Arrangement.Center, // Center horizontally
+                verticalAlignment = Alignment.CenterVertically // Center vertically
+
+            ){
+                Icon(Icons.Default.Star, contentDescription = "Star Icon", modifier = Modifier.padding(4.dp)) // Icon for the privacy
+                Text(text = "Invite Favorite Person", modifier = Modifier.padding(4.dp)) // Label
+                BooleanInputField(inviteFavoritePerson) // Boolean input field for the privacy
+            }
+
             Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
 
             // Button to go to next step
@@ -140,6 +156,8 @@ fun CreateEvent() {
         }
     }
 }
+
+
 
 /**
  * @brief Composable that allow to  make a boolean input field
