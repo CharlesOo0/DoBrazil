@@ -2,31 +2,34 @@ package com.example.dobrazil
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Title
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,10 +39,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.window.Dialog
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 
 /**
  * @brief Composable that allow to modelize the create event screen
@@ -47,52 +52,161 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEvent() {
-    Column (
+    Column ( // Column that contains the screen
         modifier = Modifier
-            .background(Color(IvoryColor))
-            .fillMaxSize(),
+            .background(Color(IvoryColor)) // Background color
+            .fillMaxSize(), // Full size
     ){
         Row ( // Top bar
             modifier = Modifier
                 .background(Color(GreenVariantColor))
                 .fillMaxWidth(),
         ){
-            Icon (
+            Icon ( // Back button
                 Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ })
+                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
                     .padding(8.dp)
             )
 
-            Text(text = "Create Event", color = Color.White, modifier = Modifier.padding(8.dp))
+            Text(text = "Create Event", color = Color.White, modifier = Modifier.padding(8.dp)) // Title
 
         }
 
-        BottomBorder(width = 3.dp, color = Color(IvoryBorderColor))
+        BottomBorder(width = 3.dp, color = Color(IvoryBorderColor)) // Border between top bar and form
 
-        Column { // Create Event Form
-            val title = remember { mutableStateOf("") }
-            val description = remember { mutableStateOf("") }
-            val location = remember { mutableStateOf("") }
-            val dateStart = rememberDatePickerState()
-            val dateEnd = rememberDatePickerState()
+        Column ( // Column that contains the form
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()) // Make the column scrollable
+        ){ // Create Event Form
+            val title = remember { mutableStateOf("") } // Title of the event
+            val description = remember { mutableStateOf("") } // Description of the event
+            val location = remember { mutableStateOf("") } // Location of the event
+            val dateStart = remember { mutableStateOf("") } // Start date of the event
+            val dateEnd = remember { mutableStateOf("") } // End date of the event
+            val private = remember { mutableStateOf(false) } // Private event
 
+            // Input field for the title
             CustomInputField(textState = title, label = "Title", icon = { Icon(Icons.Default.Title, contentDescription = "Title icon") })
+
+            // Input field for the description
             CustomInputField(textState = description, label = "Description", icon = { Icon(Icons.Default.Description, contentDescription = "Description icon") })
+
+            // Input field for the location
             CustomInputField(textState = location, label = "Location", icon = { Icon(Icons.Default.LocationOn, contentDescription = "Location icon") })
 
-            Row {
-                DatePicker(state = dateStart)
-                DatePicker(state = dateEnd)
+            Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ){
+                CustomDatePicker(dateStart, "Start Date", "From") // Date picker for the start date
+                CustomDatePicker(dateEnd, "End Date", "To") // Date picker for the end date
+            }
+
+            Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+            Row(
+                modifier = Modifier.fillMaxWidth(), // Full width
+                horizontalArrangement = Arrangement.Center, // Center horizontally
+                verticalAlignment = Alignment.CenterVertically // Center vertically
+
+            ){
+                Icon(Icons.Default.Lock, contentDescription = "Privacy Icon", modifier = Modifier.padding(4.dp)) // Icon for the privacy
+                Text(text = "Private Event", modifier = Modifier.padding(4.dp)) // Label
+                BooleanInputField(private) // Boolean input field for the privacy
+            }
+
+            Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+            // Button to go to next step
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                contentAlignment = Alignment.CenterEnd
+            ){
+                Button( // Button
+                    onClick = { /*TODO*/ }, // Action when clicked
+                    modifier = Modifier.padding(8.dp) // Padding
+                ){
+                    Text(text = "Next") // Text of the button
+                }
             }
 
         }
-
-        Row {
-
-        }
     }
+}
+
+/**
+ * @brief Composable that allow to  make a boolean input field
+ * @param switchState : MutableState<Boolean> the state of the input field
+ */
+@Composable
+fun BooleanInputField(switchState: MutableState<Boolean>) {
+    Switch( // Switch input field
+        checked = switchState.value, // Checked value
+        onCheckedChange = { switchState.value = it }, // Change the value
+        modifier = Modifier.padding(16.dp) // Padding
+    )
+}
+
+/**
+ * @brief Composable that allow to make a custom datepicker
+ * @param dateState : MutableState<String> the state of the input field
+ * @param text : String the text of the input field
+ * @param label : String the label of the input field
+ */
+@Composable
+fun CustomDatePicker(dateState: MutableState<String> = mutableStateOf(""), text: String = "Date", label: String = "Date") {
+    val context = LocalContext.current // Get the context
+    var dialogVisible by remember { mutableStateOf(false) } // Dialog visibility
+    var selectedDate by remember { mutableStateOf(Calendar.getInstance()) } // Selected date
+
+    if (dialogVisible) { // If the dialog is visible
+        AlertDialog(  // Create the dialog
+            onDismissRequest = { dialogVisible = false }, // Dismiss the dialog
+            title = { Text(text = text) }, // Title
+            text = { // Text
+                DatePickerDialog(  // Create the date picker dialog
+                    context,
+                    { _, year, month, dayOfMonth ->
+                        selectedDate.set(year, month, dayOfMonth) // Set the selected date
+                        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) // Date format
+                        dateState.value = sdf.format(selectedDate.time) // Set the date but for the page
+                        dialogVisible = false // Dismiss the dialog
+                    },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH)
+                ).show() // Show the dialog
+            },
+            confirmButton = { } // No confirm button
+        )
+    }
+
+    Row( // Row that contains the input field
+        verticalAlignment = Alignment.CenterVertically, // Center vertically
+        modifier = Modifier
+            .border(3.dp, Color(GreenVariantStrongColor))
+            .padding(8.dp)
+            .clickable { dialogVisible = true } // Make the row clickable
+    ){
+        IconButton( // Icon button
+            onClick = { dialogVisible = true }, // Show the dialog when clicked
+        ) {
+            Icon(
+                imageVector = Icons.Default.DateRange, // Icon its a calendar
+                contentDescription = "Calendar Icon"
+            )
+        }
+
+        Text(text = label + " " + dateState.value) // Label that show the date picked
+    }
+
 }
 
 /**
@@ -103,12 +217,12 @@ fun CreateEvent() {
  */
 @Composable
 fun CustomInputField(textState: MutableState<String>, label: String,  icon: (@Composable () -> Unit)? = null) {
-    TextField(
-        leadingIcon = icon,
-        label = { Text(label) },
+    TextField( // Custom input field
+        leadingIcon = icon, // Icon
+        label = { Text(label) }, // Label
         value = textState.value,
         onValueChange = { textState.value = it },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth() // Full width
     )
 }
 
