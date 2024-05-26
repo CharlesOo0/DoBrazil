@@ -98,7 +98,7 @@ fun SearchFriend() {
                 .verticalScroll(scrollState)
         ) {
             // TODO Query the search value to get the contacts and print them
-            Contact(add = true)
+            Contact(mode = 1)
         }
     }
 }

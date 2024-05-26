@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -148,10 +149,10 @@ fun SearchBar(
  * @brief Composable that modelise a contact
  * @param name: String that contains the name of the contact
  * @param avatar: String that contains the avatar of the contact
- * @param add: Boolean that contains if we show the contact in add mode or in invite mode
+ * @param mode: Int if its 0 its the invite mode, if its 1 its the add mode, if its 2 its the delete mode
  */
 @Composable
-fun Contact(name: String = "", avatar: String = "", add: Boolean = false) {
+fun Contact(name: String = "", avatar: String = "", mode: Int = 0) {
     var invited = remember { mutableStateOf(false) } // State of the invitation
 
     Row ( // Row that contains the element of the people
@@ -181,17 +182,25 @@ fun Contact(name: String = "", avatar: String = "", add: Boolean = false) {
         Text("Nom de la personne") // Name of the people
         /* TODO Remplacer par le nom de la personne */
 
-        if (add) { // If we are in add mode
+        if (mode == 0) { // If we are in add mode
             Icon( // Add button
                 Icons.Default.Add,
                 contentDescription = "Add",
                 modifier = Modifier
                     .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
             )
-        } else { // If we are in invite mode
+        } else if (mode == 1) { // If we are in invite mode
             Box {
                 BooleanInputField(switchState = invited) // Switch to invite the people
             }
+        } else {
+            Icon( // Delete button
+                Icons.Default.Delete,
+                contentDescription = "Delete",
+                modifier = Modifier
+                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+            )
+
         }
 
 
