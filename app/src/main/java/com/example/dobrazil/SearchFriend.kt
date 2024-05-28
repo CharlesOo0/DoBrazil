@@ -44,7 +44,7 @@ fun SearchFriend(mode : Int = 0, navController: NavController? = null) {
                 Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                     .padding(8.dp)
             )
 

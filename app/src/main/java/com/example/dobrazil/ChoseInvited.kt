@@ -63,7 +63,7 @@ fun ChoseInvited(navController: NavController? = null) {
                 Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                     .padding(8.dp)
             )
 
@@ -77,7 +77,8 @@ fun ChoseInvited(navController: NavController? = null) {
                 Icons.Default.ArrowForward,
                 contentDescription = "Front",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.navigate("ManageEventScreen") }) // Make the icon clickable
+                    /* TODO Make it go to the correct Event */
                     .padding(8.dp)
             )
 

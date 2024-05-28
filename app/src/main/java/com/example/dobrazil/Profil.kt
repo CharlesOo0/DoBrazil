@@ -87,7 +87,7 @@ fun Profil(navController: NavController? = null) {
                     contentDescription = "Home icon",
                     modifier = Modifier
                         .size(40.dp)
-                        .clickable { /* TODO allow to go to the menu*/ }
+                        .clickable { navController?.navigate("HomeScreen") }
                 )
 
                 Spacer(modifier = Modifier.padding(10.dp))
