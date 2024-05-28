@@ -1,12 +1,15 @@
 package com.example.dobrazil
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,9 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dobrazil.ui.theme.DoBrazilTheme
@@ -37,44 +43,58 @@ fun Budget() {
     ) {
         var page = remember { mutableStateOf(0) }
 
-        Row(
-            // Top bar
+        Box(
             modifier = Modifier
-                .background(Color(GreenVariantColor))
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-            Icon( // Back button
-                Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
-                    .padding(8.dp)
+            Image(
+                painter = painterResource(R.drawable.fond_lac_do_brazil),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()// Add a border to the image
             )
+            Column {
+                Row(
+                // Top bar
+                modifier = Modifier
+                    .background(Color(GreenVariantColor))
+                    .fillMaxWidth(),
+                ) {
+                    Icon( // Back button
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                            .padding(8.dp)
+                    )
 
-            Text(
-                text = "Budget",
-                color = Color.White,
-                modifier = Modifier.padding(8.dp)
-            ) // Title
+                    Text(
+                        text = "Budget",
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    ) // Title
 
-        }
+                }
 
-        BottomBorder(width = 3.dp, color = Color(IvoryBorderColor))
+                BottomBorder(width = 3.dp, color = Color(IvoryBorderColor))
 
-        /*------------------------------- Categorie container -------------------------------*/
-        Row (
-            modifier = Modifier
-                .fillMaxWidth() // Fill the entire width of the screen
-                .background(Color(GreenVariantColor)), // Background color of the row
-            horizontalArrangement = Arrangement.SpaceEvenly // Space the element evenly
+                /*------------------------------- Categorie container -------------------------------*/
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth() // Fill the entire width of the screen
+                        .background(Color(GreenVariantColor)), // Background color of the row
+                    horizontalArrangement = Arrangement.SpaceEvenly // Space the element evenly
 
-        ){
-            // Button to show the event that are soon
-            CategorieButton(onClick = {page.value = 0}, R.drawable.categorie_history, Modifier.weight(1f))
+                ){
+                    // Button to show the event that are soon
+                    CategorieButton(onClick = {page.value = 0}, R.drawable.categorie_history, Modifier.weight(1f))
 
-            // Button to show the event that are currently
-            CategorieButton(onClick = {page.value = 1}, R.drawable.categorie_balance, Modifier.weight(1f))
+                    // Button to show the event that are currently
+                    CategorieButton(onClick = {page.value = 1}, R.drawable.categorie_balance, Modifier.weight(1f))
 
+                }
+            }
         }
 
         /*------------------------------- Content -------------------------------*/

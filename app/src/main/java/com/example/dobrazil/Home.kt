@@ -57,11 +57,25 @@ fun Home() {
             .fillMaxSize()
             .background(Color(GreenVariantColor))
     ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(GreenVariantColor))
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_do_brazil),
+                contentDescription = "Logo Do Brazil",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(8.dp) // Padding around the Box (acts as margin)
         ) {
             Image(
                 painter = painterResource(R.drawable.lac_do_brazil), // Image of the event
@@ -70,21 +84,7 @@ fun Home() {
                 modifier = Modifier.fillMaxSize()// Add a border to the image
             )
             Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(GreenVariantColor))
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_do_brazil),
-                        contentDescription = "Logo Do Brazil",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
-                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
