@@ -33,12 +33,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
 
 /**
  * @brief ManageEvent composable that modelise the ManageEvent screen
  */
 @Composable
-fun ManageEvent() {
+fun ManageEvent(navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .fillMaxSize()

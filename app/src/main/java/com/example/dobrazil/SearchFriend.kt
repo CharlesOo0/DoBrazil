@@ -20,13 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
 /**
  * @brief SearchFriend composable that modelise the SearchFriend screen
- */
+ * @param mode Int that represent the mode of the screen Add Friend or Invite People
+ * */
 @Composable
-fun SearchFriend() {
+fun SearchFriend(mode : Int = 0, navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color
@@ -81,7 +83,7 @@ fun SearchFriend() {
                 .verticalScroll(scrollState)
         ) {
             // TODO Query the search value to get the contacts and print them
-            Contact(mode = 1)
+            Contact(mode = mode)
         }
     }
 }

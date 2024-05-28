@@ -39,13 +39,14 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.navigation.NavController
 
 
 /**
  * @brief Composable that allow to modelize the login / register screen
  */
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController? = null) {
     val isLogin = remember { mutableStateOf(true) }
 
     Column (

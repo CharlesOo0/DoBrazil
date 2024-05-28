@@ -34,12 +34,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.navigation.NavController
 
 /**
  * @brief Composable that allow to modelise the profil page
  */
 @Composable
-fun Profil() {
+fun Profil(navController: NavController? = null) {
     val scrollState = rememberScrollState()
     val page = remember { mutableStateOf(0) }
 

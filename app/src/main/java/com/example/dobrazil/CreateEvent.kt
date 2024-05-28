@@ -46,13 +46,14 @@ import java.util.Locale
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
 
 /**
  * @brief Composable that allow to modelize the create event screen
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateEvent() {
+fun CreateEvent(navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color

@@ -44,12 +44,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 
 /**
  * @brief Composable that allow to modelise the Home page
  */
 @Composable
-fun Home() {
+fun Home(navController: NavController? = null) {
     val scrollState = rememberScrollState()
 
 
