@@ -40,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -54,55 +55,84 @@ fun Home() {
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(IvoryColor))
-    ){
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.90f)
-                .verticalScroll(scrollState) // Add a scroll to the column to see all the element
-                .background(Color(IvoryColor))
-                .padding(10.dp)
-        ){
-            for (i in 0..10) {
-                Event(forProfil = false)
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-        }
-
-        BottomBorder(width = 4.dp, color = Color(IvoryBorderColor))
-
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            .background(Color(GreenVariantColor))
+    ) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(Color(GreenVariantColor))
-        ){
-            Icon (
-                Icons.Default.AddCircleOutline,
-                contentDescription = "Create an event",
-                modifier = Modifier
-                    .size(70.dp)
-                    .clickable { /* TODO allow to create an event*/ }
+                .padding(8.dp) // Padding around the Box (acts as margin)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.lac_do_brazil), // Image of the event
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()// Add a border to the image
             )
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(GreenVariantColor))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_do_brazil),
+                        contentDescription = "Logo Do Brazil",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.90f)
+                        .verticalScroll(scrollState) // Add a scroll to the column to see all the element
+                        .padding(10.dp)
+                ) {
+                    for (i in 0..10) {
+                        Event(forProfil = false)
+                        Spacer(modifier = Modifier.size(10.dp))
+                    }
+                }
 
-            Icon (
-                Icons.Default.Star,
-                contentDescription = "Search people",
-                modifier = Modifier
-                    .size(70.dp)
-                    .clickable { /* TODO allow to search for people */ }
-            )
+                BottomBorder(width = 4.dp, color = Color(IvoryBorderColor))
 
-            Icon (
-                Icons.Default.Person,
-                contentDescription = "Profil page",
-                modifier = Modifier
-                    .size(70.dp)
-                    .clickable { /* TODO allow to go to the profil*/ }
-            )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .background(Color(GreenVariantColor))
+                ) {
+                    Icon(
+                        Icons.Default.AddCircleOutline,
+                        contentDescription = "Create an event",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { /* TODO allow to create an event*/ }
+                    )
+
+                    Icon(
+                        Icons.Default.Star,
+                        contentDescription = "Search people",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { /* TODO allow to search for people */ }
+                    )
+
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = "Profil page",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { /* TODO allow to go to the profil*/ }
+                    )
+                }
+            }
         }
     }
 }
@@ -116,10 +146,10 @@ fun Home() {
 fun Event(eventId: Int = 0, forProfil: Boolean = true) {
     Row ( // Row that contains the element of the event
         modifier = Modifier
-            .border(4.dp, Color(GreenVariantStrongColor)) // Add a border to the row
-            .background(Color(GreenVariantColor)) // Background color of the row
+            .clip(RoundedCornerShape(8.dp)) // Clip the container to a rounded corner
+            .background(Color(IvoryColor).copy(alpha = 0.9f)) // Background color of the row
             .fillMaxWidth() // Fill the entire width of the screen
-            .padding(8.dp)  // Add a padding to the row
+            .padding(18.dp)  // Add a padding to the row
             .height(200.dp) // Height of the row
     ){
         Column ( // Column that contains the element the picture of the event
@@ -129,7 +159,7 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true) {
                 .padding(4.dp)
         ){
             Image(
-                painter = painterResource(R.drawable.event_default_pfp), // Image of the event
+                painter = painterResource(R.drawable.lac_do_brazil), // Image of the event
                 /* TODO Remplacer par l'image de l'événement */
                 contentDescription = "",
                 contentScale = ContentScale.FillBounds, // Fill the entire space of the image
@@ -139,6 +169,7 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true) {
             )
 
         }
+        Spacer(modifier = Modifier.size(10.dp))
 
         Column ( // Column that contains the element descripting the event
             verticalArrangement = Arrangement.SpaceEvenly, // Space the element inside evenly
@@ -147,7 +178,7 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true) {
                 .fillMaxHeight()
         ){
             Row( // Row that contains the name, location and number of person of the event
-                horizontalArrangement = Arrangement.SpaceEvenly, // Space the element inside evenly
+                horizontalArrangement = Arrangement.SpaceBetween, // Space the element inside evenly
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.15f)
@@ -168,7 +199,7 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true) {
                         Icons.Default.Add,
                         contentDescription = "Participer",
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(25.dp)
                             .clickable { /* TODO allow to participate to an event*/ }
                     )
                 }
