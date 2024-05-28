@@ -30,7 +30,7 @@ import com.example.dobrazil.ui.theme.DoBrazilTheme
  * @brief Budget composable that modelise the Budget screen
  */
 @Composable
-fun Budget() {
+fun Budget(navController: NavController? = null) {
     Column (
         modifier = Modifier
             .fillMaxSize()
