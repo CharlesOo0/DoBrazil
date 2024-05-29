@@ -62,6 +62,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.1") // AppCompat
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.javax.inject)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,4 +71,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Dagger - Hilt
+    implementation("com.google.dagger:hilt-android:2.40.5")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
 }

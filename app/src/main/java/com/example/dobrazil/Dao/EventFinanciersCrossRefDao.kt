@@ -3,6 +3,7 @@ package com.example.dobrazil.Dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.Update
 import com.example.dobrazil.Entity.EventFinanciersCrossRef
 
 /**
@@ -18,4 +19,14 @@ interface EventFinanciersCrossRefDao {
     // Delete an event-financier cross reference in the table
     @Delete
     fun delete(eventFinanciersCrossRef: EventFinanciersCrossRef)
+
+    // Update an event-financier cross reference in the table
+    @Update
+    fun update(eventFinanciersCrossRef: EventFinanciersCrossRef)
+
+    // Get all event-financier cross references in the table
+    fun getAll()
+
+    // Get an event-financier cross reference by id
+    fun getById(id : Int)
 }

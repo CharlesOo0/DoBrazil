@@ -18,4 +18,14 @@ interface EventInvitedCrossRefDao {
     // Delete an event-invited cross reference in the table
     @Delete
     fun delete(eventInvitedCrossRef: EventInvitedCrossRef)
+
+    // Update an event-invited cross reference in the table
+    @Insert
+    fun update(eventInvitedCrossRef: EventInvitedCrossRef)
+
+    // Get all event-invited cross references in the table
+    fun getAll()
+
+    // Get an event-invited cross reference by id
+    fun getById(id : Int)
 }
