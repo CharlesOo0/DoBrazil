@@ -53,7 +53,6 @@ import androidx.navigation.NavController
 fun Home(navController: NavController? = null) {
     val scrollState = rememberScrollState()
 
-<<<<<<< HEAD
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -74,13 +73,11 @@ fun Home(navController: NavController? = null) {
                     .padding(16.dp)
             )
         }
-=======
->>>>>>> 0ee4d2b7ad0f47d0b24fb80792a5195f4b9078f4
+
         Box(
             modifier = Modifier
                 .fillMaxSize() // Fill the entire size of the screen
                 .background(Color(GreenVariantStrongColor)) // Background color of the Box
-                .padding(8.dp) // Padding around the Box (acts as margin)
         ) {
             Image(
                 painter = painterResource(R.drawable.lac_do_brazil), // Image of the event
@@ -119,7 +116,7 @@ fun Home(navController: NavController? = null) {
                         Icons.Default.AddCircleOutline,
                         contentDescription = "Create an event",
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(40.dp)
                             .clickable { navController?.navigate("CreateEventScreen")}
                     )
 
@@ -127,7 +124,7 @@ fun Home(navController: NavController? = null) {
                         Icons.Default.Star,
                         contentDescription = "Search people",
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(40.dp)
                             .clickable { navController?.navigate("SearchFriendScreen") }
                     )
 
@@ -135,12 +132,13 @@ fun Home(navController: NavController? = null) {
                         Icons.Default.Person,
                         contentDescription = "Profil page",
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(40.dp)
                             .clickable { navController?.navigate("ProfilScreen") }
                     )
                 }
             }
         }
+    }
 }
 
 /**
@@ -207,7 +205,7 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavControl
                         Icons.Default.Add,
                         contentDescription = "Participer",
                         modifier = Modifier
-                            .size(25.dp)
+                            .size(20.dp)
                             .clickable { /* TODO allow to participate to an event*/ }
                     )
                 }
@@ -299,3 +297,4 @@ fun HomePreview() {
         Home()
     }
 }
+
