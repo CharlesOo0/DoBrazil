@@ -36,23 +36,103 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.navigation.NavController
+import androidx.compose.runtime.mutableStateOf
 
+
+/**
+ * @brief Function onclick that represent a register
+ * @param username : String : the username of the user
+ * @param email : String : the email of the user
+ * @param password : String : the password of the user
+ * @param confirmPassword : String : the confirmation of the password of the user
+ * @param navController : NavController? : the navigation controller
+ * @param error : MutableState<String> : the error message
+ */
+fun register(username : String, email : String, password : String, confirmPassword : String, navController: NavController? = null, error : MutableState<String>) {
+    // Check if the fields are empty
+    if (!username.isNotEmpty() && !email.isNotEmpty() && !password.isNotEmpty() && !confirmPassword.isNotEmpty()) {
+        error.value = "All fields must be filled"
+        return
+    }
+
+    // Check if username is between 8 and 32 characters
+    if (username.length < 8 || username.length > 32) {
+        error.value = "The username must be between 8 and 32 characters"
+        return
+    }
+
+    /* TODO check if username is already taken */
+
+    // Check if the email is valid
+    if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        error.value = "The email is not valid"
+        return
+    }
+
+    /* TODO check if email is already taken */
+
+    // Check if the password is between 8 and 32 characters
+    if (password.length < 8 || password.length > 32) {
+        error.value = "The password must be between 8 and 32 characters"
+        return
+    }
+
+    // Check if the password and the confirm password are the same
+    if (password != confirmPassword) {
+        error.value = "The password and the confirm password are not the same"
+        return
+    }
+
+    navController?.navigate("HomeScreen")
+}
+
+/**
+ * @brief Function onclick that represent a login
+ * @param username : String : the username of the user
+ * @param password : String : the password of the user
+ * @param navController : NavController? : the navigation controller
+ * @param error : MutableState<String> : the error message
+ */
+fun login(username : String, password : String, navController: NavController? = null, error : MutableState<String>) {
+    // Check if the fields are empty
+    if (!username.isNotEmpty() && !password.isNotEmpty()) {
+        error.value = "All fields must be filled"
+        return
+    }
+
+    /* TODO check if username and password are correct */
+
+    navController?.navigate("HomeScreen")
+}
 
 /**
  * @brief Composable that allow to modelize the login / register screen
  */
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController? = null) {
     val isLogin = remember { mutableStateOf(true) }
+    val error = remember { mutableStateOf("") }
 
     Column (
         modifier = Modifier // Fill the screen
             .fillMaxSize()
             .background(Color(GreenVariantColor))
     ){
+
+        // Variables login
+        val usernameLogin = remember { mutableStateOf("") }
+        val passwordLogin = remember { mutableStateOf("") }
+
+        // Variables register
+        val username = remember { mutableStateOf("") }
+        val email = remember { mutableStateOf("") }
+        val password = remember { mutableStateOf("") }
+        val confirmPassword = remember { mutableStateOf("") }
 
         /*------------------------------- TOP of the screen -------------------------------*/
         Row (
@@ -82,31 +162,29 @@ fun LoginScreen() {
         ){ // Bottom part of the screen where the login / register form is displayed
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
 
+            if (error.value != "") { // If there is an error
+                Text(text = error.value, color = Color.Red) // Display the error
+                Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
+            }
+
             if (isLogin.value) { // If we are in login mode
-                val username = remember { mutableStateOf("") }
-                val password = remember { mutableStateOf("") }
 
                 InputField( // Input field for the username
                     label = "Username",
-                    onValueChange = { newValue -> username.value = newValue },
+                    onValueChange = { newValue -> usernameLogin.value = newValue },
                     isPassword = false,
                     icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Email icon") }
                 )
 
                 InputField( // Input field for the password
                     label = "Password",
-                    onValueChange = { newValue -> password.value = newValue },
+                    onValueChange = { newValue -> passwordLogin.value = newValue },
                     isPassword = true,
                     icon = { Icon(Icons.Default.Lock, contentDescription = "Email icon") }
                 )
 
             }else {
                 // Define the state for each input field
-                val username = remember { mutableStateOf("") }
-                val email = remember { mutableStateOf("") }
-                val password = remember { mutableStateOf("") }
-                val confirmPassword = remember { mutableStateOf("") }
-
                 InputField( // Input field for the username
                     label = "Username",
                     onValueChange = { newValue -> username.value = newValue },
@@ -152,9 +230,9 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button
 
             if (isLogin.value) { // If we are in login mode
-                CustomButton(onClick = { /*TODO*/ }, text = "Sign in")
+                CustomButton(onClick = { login(usernameLogin.value, passwordLogin.value, navController, error) }, text = "Sign in")
             } else {
-                CustomButton(onClick = { /*TODO*/ }, text = "Sign up")
+                CustomButton(onClick = { register(username.value, email.value, password.value, confirmPassword.value, navController, error) }, text = "Sign up")
             }
 
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button

@@ -33,12 +33,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
 
 /**
  * @brief ManageEvent composable that modelise the ManageEvent screen
  */
 @Composable
-fun ManageEvent() {
+fun ManageEvent(navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .fillMaxSize()
@@ -64,8 +65,8 @@ fun ManageEvent() {
             CategorieButton(onClick = {page.value = 2}, R.drawable.categorie_delete, Modifier.weight(1f))
 
             // Button to show the your favorite people
-            CategorieButton(onClick = {/* Todo Redirect to budget page */}, R.drawable.categorie_budget, Modifier.weight(1f))
-
+            CategorieButton(onClick = {navController?.navigate("BudgetScreen")}, R.drawable.categorie_budget, Modifier.weight(1f))
+            /* TODO Make it navigate to the correct budget screen */
             // they are all weighted to take the same space
         }
 
@@ -82,7 +83,7 @@ fun ManageEvent() {
                 Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.navigate("HomeScreen") }) // Make the icon clickable
                     .padding(8.dp)
             )
 

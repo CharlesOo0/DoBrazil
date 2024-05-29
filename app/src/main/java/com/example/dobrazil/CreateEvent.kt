@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -46,13 +47,34 @@ import java.util.Locale
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
+
+/**
+ * @brief Function that verify the information for creating Event
+ * @param title : String the title of the event
+ * @param description : String the description of the event
+ * @param location : String the location of the event
+ * @param dateStart : String the start date of the event
+ * @param dateEnd : String the end date of the event
+ * @param private : Boolean the privacy of the event
+ * @param navController : NavController the navigation controller
+ * @param error : MutableState<String> the error message
+ */
+fun verifyCreateEvent(title: String, description: String, location: String, dateStart: String, dateEnd: String, private: Boolean, navController: NavController ?= null, error: MutableState<String>) {
+    if (title.isEmpty() || description.isEmpty() || location.isEmpty() || dateStart.isEmpty() || dateEnd.isEmpty()) { // If one of the field is empty
+        error.value = "Please fill all the fields" // Error message
+        return
+    }
+
+    navController?.navigate("ChoseInvitedScreen") // Go to the next screen
+}
 
 /**
  * @brief Composable that allow to modelize the create event screen
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateEvent() {
+fun CreateEvent(navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color
@@ -67,7 +89,7 @@ fun CreateEvent() {
                 Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                     .padding(8.dp)
             )
 
@@ -88,6 +110,13 @@ fun CreateEvent() {
             val dateEnd = remember { mutableStateOf("") } // End date of the event
             val private = remember { mutableStateOf(false) } // Private event
             val inviteFavoritePerson = remember { mutableStateOf(false) } // Invite favorite person
+
+            val error = remember { mutableStateOf("") } // Error message
+
+            if (error.value != "") { // If there is an error
+                Text(text = error.value, color = Color.Red) // Display the error
+                Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
+            }
 
             // Input field for the title
             CustomInputField(textState = title, label = "Title", icon = { Icon(Icons.Default.Title, contentDescription = "Title icon") })
@@ -135,7 +164,6 @@ fun CreateEvent() {
             Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
 
             // Button to go to next step
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,7 +171,7 @@ fun CreateEvent() {
                 contentAlignment = Alignment.CenterEnd
             ){
                 Button( // Button
-                    onClick = { /*TODO*/ }, // Action when clicked
+                    onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, navController, error) }, // Verify the information
                     modifier = Modifier.padding(8.dp) // Padding
                 ){
                     Text(text = "Next") // Text of the button

@@ -52,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 fun Home() {
     val scrollState = rememberScrollState()
 
+<<<<<<< HEAD
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -72,6 +73,8 @@ fun Home() {
                     .padding(16.dp)
             )
         }
+=======
+>>>>>>> 0ee4d2b7ad0f47d0b24fb80792a5195f4b9078f4
         Box(
             modifier = Modifier
                 .fillMaxSize() // Fill the entire size of the screen

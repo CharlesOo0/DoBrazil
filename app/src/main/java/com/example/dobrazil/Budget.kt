@@ -48,11 +48,20 @@ fun Budget() {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
+<<<<<<< HEAD
             Image(
                 painter = painterResource(R.drawable.fond_lac_do_brazil),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()// Add a border to the image
+=======
+            Icon( // Back button
+                Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                modifier = Modifier
+                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
+                    .padding(8.dp)
+>>>>>>> 0ee4d2b7ad0f47d0b24fb80792a5195f4b9078f4
             )
             Column {
                 Row(

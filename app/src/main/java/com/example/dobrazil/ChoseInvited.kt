@@ -39,13 +39,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
 /**
  * @brief ChoseInvited composable that modelise the ChoseInvited screen
  */
 @Composable
-fun ChoseInvited() {
+fun ChoseInvited(navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color
@@ -62,7 +63,7 @@ fun ChoseInvited() {
                 Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                     .padding(8.dp)
             )
 
@@ -76,7 +77,8 @@ fun ChoseInvited() {
                 Icons.Default.ArrowForward,
                 contentDescription = "Front",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = { navController?.navigate("ManageEventScreen") }) // Make the icon clickable
+                    /* TODO Make it go to the correct Event */
                     .padding(8.dp)
             )
 
@@ -109,7 +111,7 @@ fun ChoseInvited() {
                 .verticalScroll(scrollState)
         ) {
             // TODO Query the search value to get the contacts and print them
-            Contact()
+            Contact(mode = 1)
         }
     }
 }
