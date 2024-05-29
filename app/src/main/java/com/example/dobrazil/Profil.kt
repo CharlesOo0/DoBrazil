@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -106,7 +108,6 @@ fun Profil(navController: NavController? = null) {
                     modifier = Modifier
                         .fillMaxWidth() // Fill the entire width of the screen
                         .fillMaxHeight(0.90f) // Fill 90% of the height of the screen
-                        .verticalScroll(scrollState) // Add a scroll to the column to see all the element
                         .padding(10.dp)
                 ){
                     //BottomBorder(width = 6.dp, color = Color(IvoryBorderColor))
@@ -135,27 +136,30 @@ fun Profil(navController: NavController? = null) {
 
 
                     /*------------------------------- List of the category -------------------------------*/
-                    Column (
-                        modifier = Modifier
-                            .fillMaxSize() // Fill the entire size of the screen remaining
-                            .background(Color(IvoryColor).copy(alpha = Opacity)) // Background color of the column
-                            .verticalScroll(scrollState) // Add a scroll to the column to see all the element
-                            .padding(8.dp),
-                    ){
-                        if (page.value == 0) { // If the user want to see the event that are made by him / coming soon
-                            for (i in 0..10) {
-                                Event()
-                                Spacer(modifier = Modifier.padding(8.dp))
+                    LazyColumn {
+                        when (page.value) {
+                            0 -> { // If the user wants to see the event that are made by him / coming soon
+                                items((0..10).toList()) { i ->
+                                    Event()
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                }
                             }
-                        } else if (page.value == 1) { // If the user want to see the event that are made by him / currently
-                            Event()
-                        } else if (page.value == 2 ) { // If the user want to see the favorite people
-                            for (i in 0..10) {
-                                People()
-                                Spacer(modifier = Modifier.padding(8.dp))
+                            1 -> { // If the user wants to see the event that are made by him / currently
+                                item {
+                                    Event()
+                                }
                             }
-                        } else {
-                            Invitation()
+                            2 -> { // If the user wants to see the favorite people
+                                items((0..10).toList()) { i ->
+                                    People()
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                }
+                            }
+                            else -> {
+                                item {
+                                    Invitation()
+                                }
+                            }
                         }
                     }
                 }

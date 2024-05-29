@@ -72,7 +72,7 @@ fun Budget(navController: NavController? = null) {
                         contentDescription = "Back",
                         modifier = Modifier
                             .size(45.dp)
-                            .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                            .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                             .padding(8.dp)
                     )
 
