@@ -44,12 +44,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 
 /**
  * @brief Composable that allow to modelise the Home page
  */
 @Composable
-fun Home() {
+fun Home(navController: NavController? = null) {
     val scrollState = rememberScrollState()
 
 <<<<<<< HEAD
@@ -119,7 +120,7 @@ fun Home() {
                         contentDescription = "Create an event",
                         modifier = Modifier
                             .size(50.dp)
-                            .clickable { /* TODO allow to create an event*/ }
+                            .clickable { navController?.navigate("CreateEventScreen")}
                     )
 
                     Icon( // Icon to search for people
@@ -127,7 +128,7 @@ fun Home() {
                         contentDescription = "Search people",
                         modifier = Modifier
                             .size(50.dp)
-                            .clickable { /* TODO allow to search for people */ }
+                            .clickable { navController?.navigate("SearchFriendScreen") }
                     )
 
                     Icon( // Icon to go to the profil page
@@ -135,7 +136,7 @@ fun Home() {
                         contentDescription = "Profil page",
                         modifier = Modifier
                             .size(50.dp)
-                            .clickable { /* TODO allow to go to the profil*/ }
+                            .clickable { navController?.navigate("ProfilScreen") }
                     )
                 }
             }
@@ -146,9 +147,10 @@ fun Home() {
  * @brief Composable that modelise an event
  * @param eventId : Int that represent the id of the event
  * @param forProfil : Boolean that represent if the event is for the profil page
+ * @param navController : NavController that allow to navigate between the screen
  */
 @Composable
-fun Event(eventId: Int = 0, forProfil: Boolean = true) {
+fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavController? = null) {
     Row ( // Row that contains the element of the event
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp)) // Clip the container to a rounded corner
@@ -197,7 +199,8 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true) {
 
                 if (forProfil) { // If the event is for the profil page
                     Box {
-                        DropDownMenu()
+                        /* TODO Check if the user is the creator of the event */
+                        DropDownMenu(navController = navController)
                     }
                 } else {
                     Icon (
@@ -246,9 +249,10 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true) {
  * @brief Composable that modelise a DropDownMenu
  * @param isCreator : Boolean that represent if the user is the creator of the event
  * @param isEvent : Boolean that represent if the dropDownMenu is for an event
+ * @param navController : NavController that allow to navigate between the screen
  */
 @Composable
-fun DropDownMenu(isCreator : Boolean = false, isEvent : Boolean = true) {
+fun DropDownMenu(isCreator : Boolean = false, isEvent : Boolean = true, navController: NavController? = null){
     var expanded by remember { mutableStateOf(false) }
 
     Box { // Box that contains the DropDownMenu
@@ -267,7 +271,7 @@ fun DropDownMenu(isCreator : Boolean = false, isEvent : Boolean = true) {
                 if (isCreator) {  // If the user is the creator of the event
                     DropdownMenuItem( // Show the option to manage the event
                         text = { Text("Gerer") },
-                        onClick = { /* TODO */ }
+                        onClick = { navController?.navigate("ManageEvent") } /* TODO Make it navigate to the correct Event */
                     )
                 }
                 DropdownMenuItem( // Show the option to delete/quit the event
