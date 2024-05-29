@@ -70,7 +70,7 @@ fun ManageEvent(navController: NavController? = null) {
             // they are all weighted to take the same space
         }
 
-        BottomBorder(width = 3.dp, color = Color(BrownVariant)) // Bottom border of the row
+        BottomBorder(width = 3.dp, color = Color(BeigeVariant)) // Bottom border of the row
 
         /*------------------------------- Top bar -------------------------------*/
         Row(

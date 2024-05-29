@@ -9,7 +9,9 @@ const val IvoryBorderColor  = 0xFFb3b3a2
 const val InputFieldGreen = 0xFF195036
 const val InputFieldBrown = 0xFF5B4527
 const val GreenVariantStrongColor = 0xFF07542f
-const val BrownVariant = 0xFF6e4607
+const val BeigeVariant = 0xFFF7CDAA
+
+const val Opacity = 0.5f
 
 val poppins = FontFamily(
     Font(R.font.poppins_medium),

@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
@@ -49,43 +52,41 @@ fun Budget(navController: NavController? = null) {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            Image(
+            Image(//background
                 painter = painterResource(R.drawable.fond_lac_do_brazil),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()// Add a border to the image
             )
-            Icon( // Back button
-                Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier
-                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
-                    .padding(8.dp)
-            )
+
             Column {
-                Row(
-                // Top bar
-                modifier = Modifier
-                    .background(Color(GreenVariantColor))
-                    .fillMaxWidth(),
+                Row( // Top bar
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .background(Color(IvoryColor).copy(alpha = Opacity))
+                        .fillMaxWidth()
+                        .height(70.dp)
                 ) {
                     Icon( // Back button
                         Icons.Default.ArrowBack,
                         contentDescription = "Back",
                         modifier = Modifier
+                            .size(45.dp)
                             .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
                             .padding(8.dp)
                     )
 
                     Text(
                         text = "Budget",
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
+                        fontSize = 20.sp,
+                        color = Color(GreenVariantStrongColor),
+                        modifier = Modifier
+                            .padding(8.dp)
                     ) // Title
 
                 }
 
-                BottomBorder(width = 3.dp, color = Color(IvoryBorderColor))
+                BottomBorder(width = 3.dp, color = Color(IvoryBorderColor).copy(alpha = Opacity))
 
                 /*------------------------------- Categorie container -------------------------------*/
                 Row (

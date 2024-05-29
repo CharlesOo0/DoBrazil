@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
@@ -52,66 +55,86 @@ fun ChoseInvited(navController: NavController? = null) {
             .background(Color(IvoryColor)) // Background color
             .fillMaxSize(), // Full size
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            // Top bar
+        Box(
             modifier = Modifier
-                .background(Color(GreenVariantColor))
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-            Icon( // Back button
-                Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier
-                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
-                    .padding(8.dp)
+            Image(//background
+                painter = painterResource(R.drawable.fond_lac_do_brazil),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()// Add a border to the image
             )
+            Column{
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    // Top bar
+                    modifier = Modifier
+                        .background(Color(IvoryColor).copy(alpha = Opacity))
+                        .fillMaxWidth()
+                        .height(70.dp)
 
-            Text(
-                text = "Chose invited people",
-                color = Color.White,
-                modifier = Modifier.padding(8.dp)
-            ) // Title
+                ) {
+                    Icon( // Back button
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                            .padding(8.dp)
+                    )
 
-            Icon( // Front button
-                Icons.Default.ArrowForward,
-                contentDescription = "Front",
-                modifier = Modifier
-                    .clickable(onClick = { navController?.navigate("ManageEventScreen") }) // Make the icon clickable
-                    /* TODO Make it go to the correct Event */
-                    .padding(8.dp)
-            )
+                    Text(
+                        text = "Chose invited people",
+                        fontSize = 20.sp,
+                        color = Color(GreenVariantStrongColor),
+                        modifier = Modifier.padding(8.dp)
+                    ) // Title
 
-        }
+                    Icon( // Front button
+                        Icons.Default.ArrowForward,
+                        contentDescription = "Front",
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clickable(onClick = { navController?.navigate("ManageEventScreen") }) // Make the icon clickable
+                            /* TODO Make it go to the correct Event */
+                            .padding(8.dp)
+                    )
 
-        BottomBorder(
-            width = 3.dp,
-            color = Color(IvoryBorderColor)
-        ) // Border between top bar and form
+                }
 
-        val search = remember { mutableStateOf("") } // Search value
+                BottomBorder(
+                    width = 3.dp,
+                    color = Color(IvoryBorderColor).copy(alpha = Opacity)
+                ) // Border between top bar and form
 
-        // Search bar
-        SearchBar(
-            value = search.value, // Connect the search state to the SearchBar
-            onValueChange = { search.value = it }, // Update the search state when the value changes
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            hint = "Search for contacts"
-        )
+                val search = remember { mutableStateOf("") } // Search value
 
-        val scrollState = rememberScrollState() // Scroll state
+                // Search bar
+                SearchBar(
+                    value = search.value, // Connect the search state to the SearchBar
+                    onValueChange = { search.value = it }, // Update the search state when the value changes
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                    hint = "Search for contacts"
+                )
 
-        // List of contacts
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            // TODO Query the search value to get the contacts and print them
-            Contact(mode = 1)
+                val scrollState = rememberScrollState() // Scroll state
+
+                // List of contacts
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    // TODO Query the search value to get the contacts and print them
+                    Contact(mode = 1)
+                }
+            }
         }
     }
 }
@@ -136,14 +159,15 @@ fun SearchBar(
     TextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier
+            .background(Color(BeigeVariant) ),
         placeholder = { Text(text = hint) },
         // Keyboard options
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearchExecute() }),
         // Leading icon
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
-        singleLine = true
+        singleLine = true,
     )
 }
 
@@ -157,12 +181,12 @@ fun SearchBar(
 fun Contact(name: String = "", avatar: String = "", mode: Int = 0) {
     var invited = remember { mutableStateOf(false) } // State of the invitation
 
+
     Row ( // Row that contains the element of the people
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .border(4.dp, Color(GreenVariantStrongColor)) // Add a border to the row
-            .background(Color(GreenVariantColor)) // Background color of the row
+            .background(Color(IvoryColor).copy(alpha = Opacity)) // Background color of the row
             .fillMaxWidth() // Fill the entire width of the screen
             .padding(8.dp)  // Add a padding to the row
     ){
