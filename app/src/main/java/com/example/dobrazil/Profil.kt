@@ -22,6 +22,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
@@ -66,96 +67,121 @@ fun Profil(navController: NavController? = null) {
                     contentScale = ContentScale.Crop, // Crop the image to fit the circle
                     modifier = Modifier
                         .clip(CircleShape) // Clip the image to a circle
-                        .border(
-                            4.dp,
-                            Color(GreenVariantStrongColor),
-                            CircleShape
-                        ) // Add a border to the image
-                        .size(140.dp) // Size of the image
+                        .border(4.dp,Color(GreenVariantStrongColor),CircleShape) // Add a border to the image
+                        .size(100.dp) // Size of the image
                 )
             }
-
-            Column (
+            Column (//user infos
                 horizontalAlignment = Alignment.CenterHorizontally, // Align the column to the center
                 modifier = Modifier
                     .fillMaxWidth() // Fill the entire width of the screen
                     .padding(8.dp),
             ){
-
-                Icon (
-                    Icons.Default.Home,
-                    contentDescription = "Home icon",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { navController?.navigate("HomeScreen") }
-                )
-
-                Spacer(modifier = Modifier.padding(10.dp))
-
+                //Spacer(modifier = Modifier.padding(10.dp))
                 Text("Nom de l'utilisateur") // Username of the user
                 /* TODO Remplacer par le nom de l'utilisateur */
-
-                Spacer(modifier = Modifier.padding(10.dp))
-
+                //Spacer(modifier = Modifier.padding(10.dp))
                 Text("Email de l'utilisateur") // Email of the user
                 /* TODO Remplacer par l'email de l'utilisateur */
             }
-
-
         }
 
-        BottomBorder(width = 6.dp, color = Color(IvoryBorderColor))
 
-        /*------------------------------- Categorie container -------------------------------*/
-        Row (
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth() // Fill the entire width of the screen
-                .background(Color(GreenVariantColor)), // Background color of the row
-            horizontalArrangement = Arrangement.SpaceEvenly // Space the element evenly
+                .fillMaxSize() // Fill the entire size of the screen
+                .background(Color(GreenVariantStrongColor)) // Background color of the Box
+        ) {
+            Image(
+                painter = painterResource(R.drawable.lac_do_brazil), // Image for background
+                contentDescription = null, // Background picture of the image
+                contentScale = ContentScale.Crop, // Crop the image to fit the container
+                modifier = Modifier.fillMaxSize()// Add a border to the image
+            )
+            Column{//contains the categories container, the events and the bottom bar
 
-        ){
-            // Button to show the event that are soon
-            CategorieButton(onClick = {page.value = 0}, R.drawable.categorie_soon, Modifier.weight(1f))
 
-            // Button to show the event that are currently
-            CategorieButton(onClick = {page.value = 1}, R.drawable.categorie_party, Modifier.weight(1f))
+                Column(//column that contains the categories container and the events
+                    modifier = Modifier
+                        .fillMaxWidth() // Fill the entire width of the screen
+                        .fillMaxHeight(0.90f) // Fill 90% of the height of the screen
+                        .verticalScroll(scrollState) // Add a scroll to the column to see all the element
+                        .padding(10.dp)
+                ){
+                    //BottomBorder(width = 6.dp, color = Color(IvoryBorderColor))
+                    /*------------------------------- Categories container -------------------------------*/
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth() // Fill the entire width of the screen
+                            .background(Color(GreenVariantColor).copy(alpha = Opacity)), // Background color of the row
+                        horizontalArrangement = Arrangement.SpaceEvenly // Space the element evenly
+                    ){
+                        // Button to show the event that are soon
+                        CategorieButton(onClick = {page.value = 0}, R.drawable.categorie_soon, Modifier.weight(1f))
 
-            // Button to show the your favorite people
-            CategorieButton(onClick = {page.value = 2}, R.drawable.categorie_favorite, Modifier.weight(1f))
+                        // Button to show the event that are currently
+                        CategorieButton(onClick = {page.value = 1}, R.drawable.categorie_party, Modifier.weight(1f))
 
-            // Button to show the your favorite people
-            CategorieButton(onClick = {page.value = 3}, R.drawable.categorie_invitation, Modifier.weight(1f))
+                        // Button to show the your favorite people
+                        CategorieButton(onClick = {page.value = 2}, R.drawable.categorie_favorite, Modifier.weight(1f))
 
-            // they are all weighted to take the same space
-        }
+                        // Button to show the your favorite people
+                        CategorieButton(onClick = {page.value = 3}, R.drawable.categorie_invitation, Modifier.weight(1f))
 
-        BottomBorder(width = 6.dp, color = Color(IvoryBorderColor))
+                        // they are all weighted to take the same space
+                    }
+                    BottomBorder(width = 6.dp, color = Color(IvoryBorderColor))
 
-        /*------------------------------- List of the category -------------------------------*/
-        Column (
-            modifier = Modifier
-                .fillMaxSize() // Fill the entire size of the screen remaining
-                .background(Color(IvoryColor)) // Background color of the column
-                .verticalScroll(scrollState) // Add a scroll to the column to see all the element
-                .padding(8.dp),
-        ){
-            if (page.value == 0) { // If the user want to see the event that are made by him / coming soon
-                for (i in 0..10) {
-                    Event()
-                    Spacer(modifier = Modifier.padding(8.dp))
+
+                    /*------------------------------- List of the category -------------------------------*/
+                    Column (
+                        modifier = Modifier
+                            .fillMaxSize() // Fill the entire size of the screen remaining
+                            .background(Color(IvoryColor).copy(alpha = Opacity)) // Background color of the column
+                            .verticalScroll(scrollState) // Add a scroll to the column to see all the element
+                            .padding(8.dp),
+                    ){
+                        if (page.value == 0) { // If the user want to see the event that are made by him / coming soon
+                            for (i in 0..10) {
+                                Event()
+                                Spacer(modifier = Modifier.padding(8.dp))
+                            }
+                        } else if (page.value == 1) { // If the user want to see the event that are made by him / currently
+                            Event()
+                        } else if (page.value == 2 ) { // If the user want to see the favorite people
+                            for (i in 0..10) {
+                                People()
+                                Spacer(modifier = Modifier.padding(8.dp))
+                            }
+                        } else {
+                            Invitation()
+                        }
+                    }
                 }
-            } else if (page.value == 1) { // If the user want to see the event that are made by him / currently
-                Event()
-            } else if (page.value == 2 ) { // If the user want to see the favorite people
-                for (i in 0..10) {
-                    People()
-                    Spacer(modifier = Modifier.padding(8.dp))
+
+
+                Row( // Row that contains the bottom bar
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth() // Fill the entire width of the screen
+                        .fillMaxHeight() // Fill the entire height remaining of the screen
+                        .background(Color(GreenVariantColor))
+                ){
+                    Icon (
+                        Icons.Default.Home,
+                        contentDescription = "Home icon",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { navController?.navigate("HomeScreen") }
+                    )
                 }
-            } else {
-                Invitation()
             }
-
         }
+
+
+
     }
 }
 

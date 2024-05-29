@@ -80,7 +80,7 @@ fun Home(navController: NavController? = null) {
                 .background(Color(GreenVariantStrongColor)) // Background color of the Box
         ) {
             Image(
-                painter = painterResource(R.drawable.lac_do_brazil), // Image of the event
+                painter = painterResource(R.drawable.lac_do_brazil), // Image for background
                 contentDescription = null, // Background picture of the image
                 contentScale = ContentScale.Crop, // Crop the image to fit the container
                 modifier = Modifier.fillMaxSize()// Add a border to the image
