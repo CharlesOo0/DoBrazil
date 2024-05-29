@@ -74,41 +74,44 @@ fun Home() {
         }
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize() // Fill the entire size of the screen
+                .background(Color(GreenVariantStrongColor)) // Background color of the Box
+                .padding(8.dp) // Padding around the Box (acts as margin)
         ) {
             Image(
                 painter = painterResource(R.drawable.lac_do_brazil), // Image of the event
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentDescription = null, // Background picture of the image
+                contentScale = ContentScale.Crop, // Crop the image to fit the container
                 modifier = Modifier.fillMaxSize()// Add a border to the image
             )
+
             Column {
 
-                Column(
+                Column( // Column that contains the events
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.90f)
+                        .fillMaxWidth() // Fill the entire width of the screen
+                        .fillMaxHeight(0.90f) // Fill 90% of the height of the screen
                         .verticalScroll(scrollState) // Add a scroll to the column to see all the element
                         .padding(10.dp)
                 ) {
-                    for (i in 0..10) {
-                        Event(forProfil = false)
-                        Spacer(modifier = Modifier.size(10.dp))
+                    for (i in 0..10) { // For each event
+                        Event(forProfil = false) // Show the event
+                        Spacer(modifier = Modifier.size(10.dp)) // Add a space between each event
                     }
                 }
 
+                // Border between the events and the bottom bar
                 BottomBorder(width = 4.dp, color = Color(IvoryBorderColor))
 
-                Row(
+                Row( // Row that contains the bottom bar
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                        .fillMaxWidth() // Fill the entire width of the screen
+                        .fillMaxHeight() // Fill the entire height remaining of the screen
                         .background(Color(GreenVariantColor))
                 ) {
-                    Icon(
+                    Icon( // Icon to create an event
                         Icons.Default.AddCircleOutline,
                         contentDescription = "Create an event",
                         modifier = Modifier
@@ -116,7 +119,7 @@ fun Home() {
                             .clickable { /* TODO allow to create an event*/ }
                     )
 
-                    Icon(
+                    Icon( // Icon to search for people
                         Icons.Default.Star,
                         contentDescription = "Search people",
                         modifier = Modifier
@@ -124,7 +127,7 @@ fun Home() {
                             .clickable { /* TODO allow to search for people */ }
                     )
 
-                    Icon(
+                    Icon( // Icon to go to the profil page
                         Icons.Default.Person,
                         contentDescription = "Profil page",
                         modifier = Modifier
@@ -134,7 +137,6 @@ fun Home() {
                 }
             }
         }
-    }
 }
 
 /**
