@@ -1,6 +1,7 @@
 package com.example.dobrazil
 
 import android.app.DatePickerDialog
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,11 +10,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -47,6 +51,10 @@ import java.util.Locale
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 /**
@@ -80,104 +88,148 @@ fun CreateEvent(navController: NavController? = null) {
             .background(Color(IvoryColor)) // Background color
             .fillMaxSize(), // Full size
     ){
-        Row ( // Top bar
+        Box(
             modifier = Modifier
-                .background(Color(GreenVariantColor))
-                .fillMaxWidth(),
-        ){
-            Icon ( // Back button
-                Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier
-                    .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
-                    .padding(8.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            Image(//background
+                painter = painterResource(R.drawable.fond_lac_do_brazil),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()// Add a border to the image
             )
 
-            Text(text = "Create Event", color = Color.White, modifier = Modifier.padding(8.dp)) // Title
+            Column{
+                Row( // Top bar
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .background(Color(IvoryColor).copy(alpha = Opacity))
+                        .fillMaxWidth()
+                        .height(70.dp)
+                ) {
+                    Icon( // Back button
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                            .padding(8.dp)
+                    )
 
-        }
+                    Text(
+                        text = "Budget",
+                        fontSize = 20.sp,
+                        color = Color(GreenVariantStrongColor),
+                        modifier = Modifier
+                            .padding(8.dp)
+                    ) // Title
 
-        BottomBorder(width = 3.dp, color = Color(IvoryBorderColor)) // Border between top bar and form
-
-        Column ( // Column that contains the form
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()) // Make the column scrollable
-        ){ // Create Event Form
-            val title = remember { mutableStateOf("") } // Title of the event
-            val description = remember { mutableStateOf("") } // Description of the event
-            val location = remember { mutableStateOf("") } // Location of the event
-            val dateStart = remember { mutableStateOf("") } // Start date of the event
-            val dateEnd = remember { mutableStateOf("") } // End date of the event
-            val private = remember { mutableStateOf(false) } // Private event
-            val inviteFavoritePerson = remember { mutableStateOf(false) } // Invite favorite person
-
-            val error = remember { mutableStateOf("") } // Error message
-
-            if (error.value != "") { // If there is an error
-                Text(text = error.value, color = Color.Red) // Display the error
-                Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
-            }
-
-            // Input field for the title
-            CustomInputField(textState = title, label = "Title", icon = { Icon(Icons.Default.Title, contentDescription = "Title icon") })
-
-            // Input field for the description
-            CustomInputField(textState = description, label = "Description", icon = { Icon(Icons.Default.Description, contentDescription = "Description icon") })
-
-            // Input field for the location
-            CustomInputField(textState = location, label = "Location", icon = { Icon(Icons.Default.LocationOn, contentDescription = "Location icon") })
-
-            Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
-
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ){
-                CustomDatePicker(dateStart, "Start Date", "From") // Date picker for the start date
-                CustomDatePicker(dateEnd, "End Date", "To") // Date picker for the end date
-            }
-
-            Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
-
-            Row(
-                modifier = Modifier.fillMaxWidth(), // Full width
-                horizontalArrangement = Arrangement.Center, // Center horizontally
-                verticalAlignment = Alignment.CenterVertically // Center vertically
-
-            ){
-                Icon(Icons.Default.Lock, contentDescription = "Privacy Icon", modifier = Modifier.padding(4.dp)) // Icon for the privacy
-                Text(text = "Private Event", modifier = Modifier.padding(4.dp)) // Label
-                BooleanInputField(private) // Boolean input field for the privacy
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(), // Full width
-                horizontalArrangement = Arrangement.Center, // Center horizontally
-                verticalAlignment = Alignment.CenterVertically // Center vertically
-
-            ){
-                Icon(Icons.Default.Star, contentDescription = "Star Icon", modifier = Modifier.padding(4.dp)) // Icon for the privacy
-                Text(text = "Invite Favorite Person", modifier = Modifier.padding(4.dp)) // Label
-                BooleanInputField(inviteFavoritePerson) // Boolean input field for the privacy
-            }
-
-            Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
-
-            // Button to go to next step
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                contentAlignment = Alignment.CenterEnd
-            ){
-                Button( // Button
-                    onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, navController, error) }, // Verify the information
-                    modifier = Modifier.padding(8.dp) // Padding
-                ){
-                    Text(text = "Next") // Text of the button
                 }
-            }
 
+
+                BottomBorder(width = 3.dp, color = Color(IvoryBorderColor).copy(alpha = Opacity)) // Border between top bar and form
+                Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+                Column ( // Column that contains the form
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .verticalScroll(rememberScrollState()) // Make the column scrollable
+                ){ // Create Event Form
+                    val title = remember { mutableStateOf("") } // Title of the event
+                    val description = remember { mutableStateOf("") } // Description of the event
+                    val location = remember { mutableStateOf("") } // Location of the event
+                    val dateStart = remember { mutableStateOf("") } // Start date of the event
+                    val dateEnd = remember { mutableStateOf("") } // End date of the event
+                    val private = remember { mutableStateOf(false) } // Private event
+                    val inviteFavoritePerson = remember { mutableStateOf(false) } // Invite favorite person
+
+                    val error = remember { mutableStateOf("") } // Error message
+
+                    if (error.value != "") { // If there is an error
+                        Text(text = error.value, color = Color.Red) // Display the error
+                        Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp
+                    }
+
+                    // Input field for the title
+                    CustomInputField(textState = title, label = "Title", icon = { Icon(Icons.Default.Title, contentDescription = "Title icon") })
+
+                    // Input field for the description
+                    CustomInputField(textState = description, label = "Description", icon = { Icon(Icons.Default.Description, contentDescription = "Description icon") })
+
+                    // Input field for the location
+                    CustomInputField(textState = location, label = "Location", icon = { Icon(Icons.Default.LocationOn, contentDescription = "Location icon") })
+
+                    Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+                    Column(
+                        modifier =  Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(IvoryColor).copy(alpha = Opacity))
+                            .padding(8.dp)
+                    ){
+
+                        Row (//chose the dates
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ){
+                            CustomDatePicker(dateStart, "Start Date", "From") // Date picker for the start date
+                            CustomDatePicker(dateEnd, "End Date", "To") // Date picker for the end date
+                        }
+
+                        Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+                        Row(//chose to set the event as private or not
+                            modifier = Modifier.fillMaxWidth(), // Full width
+                            horizontalArrangement = Arrangement.Absolute.Left, // Center horizontally
+                            verticalAlignment = Alignment.CenterVertically // Center vertically
+
+                        ){
+                            Icon(Icons.Default.Lock, contentDescription = "Privacy Icon", modifier = Modifier.padding(4.dp)) // Icon for the privacy
+                            Text(text = "Private Event", modifier = Modifier.padding(4.dp)) // Label
+                            BooleanInputField(private) // Boolean input field for the privacy
+                        }
+
+                        Row(//chose to invite Favorite persons or not
+                            modifier = Modifier.fillMaxWidth(), // Full width
+                            horizontalArrangement = Arrangement.Absolute.Left, // Center horizontally
+                            verticalAlignment = Alignment.CenterVertically // Center vertically
+
+                        ){
+                            Icon(Icons.Default.Star, contentDescription = "Star Icon", modifier = Modifier.padding(4.dp)) // Icon for the privacy
+                            Text(text = "Invite Favorite Person", modifier = Modifier.padding(4.dp)) // Label
+                            BooleanInputField(inviteFavoritePerson) // Boolean input field for the privacy
+                        }
+
+                        Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
+
+                        // Button to go to next step
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ){
+                            Button( // Button
+                                onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, navController, error) }, // Verify the information
+                                modifier = Modifier
+                                    .padding(8.dp) // Padding
+                            ){
+                                Text(
+                                    text = "Next",
+                                    color = Color(BeigeVariant)
+                                ) // Text of the button
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
         }
     }
 }
@@ -234,8 +286,6 @@ fun CustomDatePicker(dateState: MutableState<String> = mutableStateOf(""), text:
     Row( // Row that contains the input field
         verticalAlignment = Alignment.CenterVertically, // Center vertically
         modifier = Modifier
-            .border(3.dp, Color(GreenVariantStrongColor))
-            .padding(8.dp)
             .clickable { dialogVisible = true } // Make the row clickable
     ){
         IconButton( // Icon button

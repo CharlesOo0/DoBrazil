@@ -86,7 +86,7 @@ fun Budget(navController: NavController? = null) {
 
                 }
 
-                BottomBorder(width = 3.dp, color = Color(IvoryBorderColor).copy(alpha = Opacity))
+                BottomBorder(width = 3.dp, color = Color(IvoryBorderColor).copy(alpha = Opacity))// Border between top bar and form
 
                 /*------------------------------- Categorie container -------------------------------*/
                 Row (
