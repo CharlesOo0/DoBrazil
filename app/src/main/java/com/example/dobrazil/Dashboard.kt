@@ -1,17 +1,22 @@
 package com.example.dobrazil
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.dobrazil.EntityRepositories.EventRepository
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
 /**
  * @brief Dashboard that manage how the screen Interact with each others.
  */
 @Composable
-fun Dashboard() {
+fun Dashboard(
+//    viewModel: MainViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
     
     NavHost(navController = navController, startDestination = "LoginScreen") {

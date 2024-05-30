@@ -80,7 +80,6 @@ fun verifyCreateEvent(title: String, description: String, location: String, date
 /**
  * @brief Composable that allow to modelize the create event screen
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEvent(navController: NavController? = null) {
     Column ( // Column that contains the screen
@@ -113,7 +112,7 @@ fun CreateEvent(navController: NavController? = null) {
                         contentDescription = "Back",
                         modifier = Modifier
                             .size(45.dp)
-                            .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                            .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                             .padding(8.dp)
                     )
 

@@ -1,9 +1,9 @@
-package com.example.dobrazil.Room
+package com.example.dobrazil
 
 import dagger.hilt.android.HiltAndroidApp
 import android.app.Application
 
 @HiltAndroidApp
-class DataBaseApp : Application() {
+class DoBrazilApp : Application() {
 
 }
