@@ -8,19 +8,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.profilViewModel
 
 /**
  * @brief Dashboard that manage how the screen Interact with each others.
  */
 @Composable
 fun Dashboard(
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: profilViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
 
-    val profil : ProfilEntity = ProfilEntity(null, "Charles", "DZJDZD")
-
-    viewModel.insert(profil)
+    viewModel.getAll() // Here so we can view the table Profil in the app inspection
 
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable("LoginScreen") {

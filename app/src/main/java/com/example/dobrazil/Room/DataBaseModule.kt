@@ -2,6 +2,10 @@ package com.example.dobrazil.Room
 
 import android.content.Context
 import androidx.room.Room
+import com.example.dobrazil.Dao.EventDao
+import com.example.dobrazil.Dao.EventFinanciersCrossRefDao
+import com.example.dobrazil.Dao.EventInvitedCrossRefDao
+import com.example.dobrazil.Dao.ExpenseDao
 //import com.example.dobrazil.Dao.EventFinanciersCrossRefDao
 //import com.example.dobrazil.Dao.EventInvitedCrossRefDao
 //import com.example.dobrazil.Dao.ExpenseDao
@@ -28,10 +32,23 @@ object DataBaseModule {
              context.applicationContext,
              AppDatabase::class.java,
              "DoBrazil.db"
-         ).build()
+         )
+             .fallbackToDestructiveMigration()
+             .build()
      }
 
      @Provides
-     fun provideTaskpProfilDao(database: AppDatabase): ProfilDao = database.profilDao()
+     fun provideTaskProfilDao(database: AppDatabase): ProfilDao = database.profilDao()
 
+    @Provides
+    fun provideTaskExpenseDao(database: AppDatabase): ExpenseDao = database.expenseDao()
+
+    @Provides
+    fun provideTaskEventInvitedCrossRefDao(database: AppDatabase): EventInvitedCrossRefDao = database.eventInvitedCrossRefDao()
+
+    @Provides
+    fun provideTaskEventFinanciersCrossRefDao(database: AppDatabase): EventFinanciersCrossRefDao = database.eventFinanciersCrossRefDao()
+
+    @Provides
+    fun provideTaskEventDao(database: AppDatabase): EventDao = database.eventDao()
 }

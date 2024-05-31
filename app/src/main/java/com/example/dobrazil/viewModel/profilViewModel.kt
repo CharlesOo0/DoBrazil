@@ -1,4 +1,4 @@
-package com.example.dobrazil
+package com.example.dobrazil.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class MainViewModel @Inject public constructor(
+class profilViewModel @Inject public constructor(
     private val repository: ProfilRepository
 ) : ViewModel(){
     fun getAll(){

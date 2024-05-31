@@ -12,17 +12,16 @@ import com.example.dobrazil.Entity.*
  */
 @Database(entities = [
     ProfilEntity::class,
-//    EventEntity::class,
-//    ExpenseEntity::class,
-//    EventInvitedCrossRef::class,
-//    EventFinanciersCrossRef::class
-                     ], version = 1)
+    EventEntity::class,
+    ExpenseEntity::class,
+    EventInvitedCrossRef::class,
+    EventFinanciersCrossRef::class
+                     ], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profilDao(): ProfilDao // Dao for the Profil table
-//    abstract fun eventDao(): EventDao // Dao for the Event table
-
-//    abstract fun expenseDao(): ExpenseDao // Dao for the Expense table
-//    abstract fun eventInvitedCrossRefDao(): EventInvitedCrossRefDao // Dao for the EventInvitedCrossRef table
-//    abstract fun eventFinanciersCrossRefDao(): EventFinanciersCrossRefDao // Dao for the EventFinanciersCrossRef table
+    abstract fun eventDao(): EventDao // Dao for the Event table
+    abstract fun expenseDao(): ExpenseDao // Dao for the Expense table
+    abstract fun eventInvitedCrossRefDao(): EventInvitedCrossRefDao // Dao for the EventInvitedCrossRef table
+    abstract fun eventFinanciersCrossRefDao(): EventFinanciersCrossRefDao // Dao for the EventFinanciersCrossRef table
 
 }

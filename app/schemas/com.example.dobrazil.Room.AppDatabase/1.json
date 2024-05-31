@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "221bfe721c139ea71bad4d54bfb6c845",
+    "identityHash": "ec929772c3a7f00a3f4f9754ce697b7c",
     "entities": [
       {
         "tableName": "ProfilEntity",
@@ -35,12 +35,62 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "ExpenseEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idExpense` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `amount` REAL NOT NULL, `date` TEXT NOT NULL, `idPayer` INTEGER NOT NULL, `idFinancer` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "idExpense",
+            "columnName": "idExpense",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idPayer",
+            "columnName": "idPayer",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idFinancer",
+            "columnName": "idFinancer",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idExpense"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '221bfe721c139ea71bad4d54bfb6c845')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ec929772c3a7f00a3f4f9754ce697b7c')"
     ]
   }
 }
