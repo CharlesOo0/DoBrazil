@@ -18,9 +18,9 @@ fun Dashboard(
 ) {
     val navController = rememberNavController()
 
-//    val profil : ProfilEntity = ProfilEntity(null, "Charles", "DZJDZD")
-//
-//    viewModel.insert(profil)
+    val profil : ProfilEntity = ProfilEntity(null, "Charles", "DZJDZD")
+
+    viewModel.insert(profil)
 
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable("LoginScreen") {
