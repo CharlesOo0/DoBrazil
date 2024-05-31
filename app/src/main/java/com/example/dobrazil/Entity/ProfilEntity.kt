@@ -11,7 +11,8 @@ import androidx.room.PrimaryKey
  */
 @Entity
 data class ProfilEntity(
-    @PrimaryKey val idProfil: Int,
+    @PrimaryKey(autoGenerate = true)
+    val idProfil : Int?,
     val username: String,
     val password: String
 )

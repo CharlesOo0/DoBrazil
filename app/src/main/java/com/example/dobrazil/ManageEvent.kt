@@ -34,6 +34,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
+import com.example.appwithroomuv.R
 
 /**
  * @brief ManageEvent composable that modelise the ManageEvent screen

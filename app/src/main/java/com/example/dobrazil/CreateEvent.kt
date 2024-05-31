@@ -56,6 +56,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appwithroomuv.R
 
 /**
  * @brief Function that verify the information for creating Event
@@ -307,6 +308,7 @@ fun CustomDatePicker(dateState: MutableState<String> = mutableStateOf(""), text:
  * @param label : String the label of the input field
  * @param icon : ImageVector the icon of the input field
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomInputField(textState: MutableState<String>, label: String,  icon: (@Composable () -> Unit)? = null) {
     TextField( // Custom input field

@@ -1,13 +1,12 @@
 package com.example.dobrazil
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dobrazil.EntityRepositories.EventRepository
+import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
 /**
@@ -15,10 +14,14 @@ import com.example.dobrazil.ui.theme.DoBrazilTheme
  */
 @Composable
 fun Dashboard(
-//    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-    
+
+//    val profil : ProfilEntity = ProfilEntity(null, "Charles", "DZJDZD")
+//
+//    viewModel.insert(profil)
+
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable("LoginScreen") {
             LoginScreen(navController = navController)

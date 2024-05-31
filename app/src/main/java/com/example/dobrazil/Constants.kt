@@ -2,6 +2,7 @@ package com.example.dobrazil
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import com.example.appwithroomuv.R
 
 // Colors
 const val IvoryColor = 0xFFDFDFCB

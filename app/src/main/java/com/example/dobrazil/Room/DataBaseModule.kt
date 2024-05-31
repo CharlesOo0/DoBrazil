@@ -2,15 +2,14 @@ package com.example.dobrazil.Room
 
 import android.content.Context
 import androidx.room.Room
-import com.example.dobrazil.Dao.EventDao
-import com.example.dobrazil.Dao.EventFinanciersCrossRefDao
-import com.example.dobrazil.Dao.EventInvitedCrossRefDao
-import com.example.dobrazil.Dao.ExpenseDao
+//import com.example.dobrazil.Dao.EventFinanciersCrossRefDao
+//import com.example.dobrazil.Dao.EventInvitedCrossRefDao
+//import com.example.dobrazil.Dao.ExpenseDao
 import com.example.dobrazil.Dao.ProfilDao
-import com.example.dobrazil.EntityRepositories.EventFinanciersRepository
-import com.example.dobrazil.EntityRepositories.EventInvitedRepository
-import com.example.dobrazil.EntityRepositories.EventRepository
-import com.example.dobrazil.EntityRepositories.ExpenseRepository
+//import com.example.dobrazil.EntityRepositories.EventFinanciersRepository
+//import com.example.dobrazil.EntityRepositories.EventInvitedRepository
+//import com.example.dobrazil.EntityRepositories.EventRepository
+//import com.example.dobrazil.EntityRepositories.ExpenseRepository
 import com.example.dobrazil.EntityRepositories.ProfilRepository
 import dagger.Module
 import dagger.Provides
@@ -33,6 +32,6 @@ object DataBaseModule {
      }
 
      @Provides
-     fun provideTaskEventDao(database: AppDatabase): EventDao = database.eventDao()
+     fun provideTaskpProfilDao(database: AppDatabase): ProfilDao = database.profilDao()
 
 }

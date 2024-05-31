@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -43,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appwithroomuv.R
 import com.example.dobrazil.ui.theme.DoBrazilTheme
 
 /**
@@ -148,6 +150,7 @@ fun ChoseInvited(navController: NavController? = null) {
  * @param onSearchExecute: () -> Unit that contains the function to execute when the search is done
 
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     value: String,

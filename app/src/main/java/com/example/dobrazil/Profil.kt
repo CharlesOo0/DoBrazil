@@ -38,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
+import com.example.appwithroomuv.R
 
 /**
  * @brief Composable that allow to modelise the profil page

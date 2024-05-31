@@ -36,12 +36,14 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.mutableStateOf
+import com.example.appwithroomuv.R
 
 
 /**
@@ -267,6 +269,7 @@ fun LoginScreen(navController: NavController? = null) {
  * @param icon : Icons : the icon that will be displayed in the input field
  * @param width : Float : the width of the input field
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputField(label: String, onValueChange: (String) -> Unit, isPassword: Boolean, icon: (@Composable () -> Unit)? = null, width: Float = 0.7f) {
     val passwordVisibility = remember { mutableStateOf(false) }
