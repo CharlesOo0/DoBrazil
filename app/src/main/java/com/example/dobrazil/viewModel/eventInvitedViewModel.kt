@@ -2,23 +2,23 @@ package com.example.dobrazil.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dobrazil.Entity.ProfilEntity
-import com.example.dobrazil.EntityRepositories.ProfilRepository
+import com.example.dobrazil.Entity.EventInvitedCrossRef
+import com.example.dobrazil.EntityRepositories.EventInvitedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * @brief ViewModel for Profil
+ * @brief ViewModel for EventInvited
  */
 @HiltViewModel
-class profilViewModel @Inject public constructor(
-    private val repository: ProfilRepository
+class eventInvitedViewModel @Inject public constructor(
+    private val repository: EventInvitedRepository
 ) : ViewModel(){
 
     /**
-     * @brief Get all Profil
+     * @brief Get all EventInvited
      */
     fun getAll(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,7 +27,7 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
-     * @brief Get Profil by id
+     * @brief Get EventInvited by id
      */
     fun getById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,27 +36,27 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
-     * @brief Insert Profil
+     * @brief Insert EventInvited
      */
-    fun insert(event: ProfilEntity){
+    fun insert(event: EventInvitedCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(event)
         }
     }
 
     /**
-     * @brief Delete Profil
+     * @brief Delete EventInvited
      */
-    fun delete(event: ProfilEntity){
+    fun delete(event: EventInvitedCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(event)
         }
     }
 
     /**
-     * @brief Update Profil
+     * @brief Update EventInvited
      */
-    fun update(event: ProfilEntity){
+    fun update(event: EventInvitedCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
             repository.update(event)
         }

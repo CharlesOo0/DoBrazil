@@ -2,23 +2,23 @@ package com.example.dobrazil.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dobrazil.Entity.ProfilEntity
-import com.example.dobrazil.EntityRepositories.ProfilRepository
+import com.example.dobrazil.Entity.EventEntity
+import com.example.dobrazil.EntityRepositories.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * @brief ViewModel for Profil
+ * @brief ViewModel for Event
  */
 @HiltViewModel
-class profilViewModel @Inject public constructor(
-    private val repository: ProfilRepository
+class eventViewModel @Inject public constructor(
+    private val repository: EventRepository
 ) : ViewModel(){
 
     /**
-     * @brief Get all Profil
+     * @brief Get all Event
      */
     fun getAll(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,7 +27,7 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
-     * @brief Get Profil by id
+     * @brief Get Event by id
      */
     fun getById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,27 +36,27 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
-     * @brief Insert Profil
+     * @brief Insert Event
      */
-    fun insert(event: ProfilEntity){
+    fun insert(event: EventEntity){
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(event)
         }
     }
 
     /**
-     * @brief Delete Profil
+     * @brief Delete Event
      */
-    fun delete(event: ProfilEntity){
+    fun delete(event: EventEntity){
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(event)
         }
     }
 
     /**
-     * @brief Update Profil
+     * @brief Update Event
      */
-    fun update(event: ProfilEntity){
+    fun update(event: EventEntity){
         viewModelScope.launch(Dispatchers.IO) {
             repository.update(event)
         }

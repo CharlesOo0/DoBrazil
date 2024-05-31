@@ -2,23 +2,23 @@ package com.example.dobrazil.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dobrazil.Entity.ProfilEntity
-import com.example.dobrazil.EntityRepositories.ProfilRepository
+import com.example.dobrazil.Entity.EventFinanciersCrossRef
+import com.example.dobrazil.EntityRepositories.EventFinanciersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * @brief ViewModel for Profil
+ * @brief ViewModel for EventFinanciers
  */
 @HiltViewModel
-class profilViewModel @Inject public constructor(
-    private val repository: ProfilRepository
+class eventFinanciersViewModel @Inject public constructor(
+    private val repository: EventFinanciersRepository
 ) : ViewModel(){
 
     /**
-     * @brief Get all Profil
+     * @brief Get all EventFinanciers
      */
     fun getAll(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,7 +27,7 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
-     * @brief Get Profil by id
+     * @brief Get EventFinanciers by id
      */
     fun getById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,27 +36,27 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
-     * @brief Insert Profil
+     * @brief Insert EventFinanciers
      */
-    fun insert(event: ProfilEntity){
+    fun insert(event: EventFinanciersCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(event)
         }
     }
 
     /**
-     * @brief Delete Profil
+     * @brief Delete EventFinanciers
      */
-    fun delete(event: ProfilEntity){
+    fun delete(event: EventFinanciersCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(event)
         }
     }
 
     /**
-     * @brief Update Profil
+     * @brief Update EventFinanciers
      */
-    fun update(event: ProfilEntity){
+    fun update(event: EventFinanciersCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
             repository.update(event)
         }
