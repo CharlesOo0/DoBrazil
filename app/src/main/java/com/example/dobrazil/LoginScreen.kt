@@ -43,7 +43,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.mutableStateOf
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.appwithroomuv.R
+import com.example.dobrazil.data.LocalStorage
+import com.example.dobrazil.viewModel.profilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -54,10 +62,21 @@ import com.example.appwithroomuv.R
  * @param confirmPassword : String : the confirmation of the password of the user
  * @param navController : NavController? : the navigation controller
  * @param error : MutableState<String> : the error message
+ * @param profilViewModel : profilViewModel : the view model of the profil
+ * @param localStorage : LocalStorage : the local storage
  */
-fun register(username : String, email : String, password : String, confirmPassword : String, navController: NavController? = null, error : MutableState<String>) {
+fun register(
+    username : String,
+    email : String,
+    password : String,
+    confirmPassword : String,
+    navController: NavController? = null,
+    error : MutableState<String>,
+    profilViewModel: profilViewModel,
+    localStorage: LocalStorage
+) {
     // Check if the fields are empty
-    if (!username.isNotEmpty() && !email.isNotEmpty() && !password.isNotEmpty() && !confirmPassword.isNotEmpty()) {
+    if (!username.isNotEmpty() || !email.isNotEmpty() || !password.isNotEmpty() || !confirmPassword.isNotEmpty()) {
         error.value = "All fields must be filled"
         return
     }
@@ -68,15 +87,11 @@ fun register(username : String, email : String, password : String, confirmPasswo
         return
     }
 
-    /* TODO check if username is already taken */
-
     // Check if the email is valid
     if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
         error.value = "The email is not valid"
         return
     }
-
-    /* TODO check if email is already taken */
 
     // Check if the password is between 8 and 32 characters
     if (password.length < 8 || password.length > 32) {
@@ -90,7 +105,35 @@ fun register(username : String, email : String, password : String, confirmPasswo
         return
     }
 
-    navController?.navigate("HomeScreen")
+    // Start a coroutine
+    profilViewModel.viewModelScope.launch(Dispatchers.IO) {
+        val usernameTaken = async { profilViewModel.checkUsername(username) } // Check if the username is already taken
+        val emailTaken = async { profilViewModel.checkEmail(email) } // Check if the email is already taken
+
+        if (usernameTaken.await()) { // If the username is already taken
+            withContext(Dispatchers.Main) { // Switch to the main thread
+                // Display an error message
+                error.value = "The username is already taken"
+            }
+            return@launch // Stop the coroutine
+        }
+
+        if (emailTaken.await()) { // If the email is already taken
+            withContext(Dispatchers.Main) { // Switch to the main thread
+                // Display an error message
+                error.value = "The email is already taken"
+            }
+            return@launch // Stop the coroutine
+        }
+
+        // If the username and the email are not taken
+        // Register the user
+        withContext(Dispatchers.Main) { // Switch to the main thread
+            localStorage.username = username // Save the username in the local storage
+            profilViewModel.register(email, username, password) // Register the user
+            navController?.navigate("HomeScreen") // Navigate to the home screen
+        }
+    }
 }
 
 /**
@@ -99,24 +142,53 @@ fun register(username : String, email : String, password : String, confirmPasswo
  * @param password : String : the password of the user
  * @param navController : NavController? : the navigation controller
  * @param error : MutableState<String> : the error message
+ * @param profilViewModel : profilViewModel : the view model of the profil
+ * @param localStorage : LocalStorage : the local storage
  */
-fun login(username : String, password : String, navController: NavController? = null, error : MutableState<String>) {
+fun login(
+    username : String,
+    password : String,
+    navController: NavController? = null,
+    error : MutableState<String>,
+    profilViewModel: profilViewModel,
+    localStorage: LocalStorage
+) {
     // Check if the fields are empty
     if (!username.isNotEmpty() && !password.isNotEmpty()) {
         error.value = "All fields must be filled"
         return
     }
 
-    /* TODO check if username and password are correct */
+    // Check the login creds
+    // Start a coroutine
+    profilViewModel.viewModelScope.launch(Dispatchers.IO) {
+        val result = async { profilViewModel.login(username, password) } // Check the login creds
 
-    navController?.navigate("HomeScreen")
+        if (result.await()) { // If the login creds are correct
+            withContext(Dispatchers.Main) { // Switch to the main thread
+                // Save the username in the local storage
+                localStorage.username = username
+                // Navigate to the home screen
+                navController?.navigate("HomeScreen")
+            }
+        } else { // If the login creds are incorrect
+            withContext(Dispatchers.Main) { // Switch to the main thread
+                // Display an error message
+                error.value = "The username or the password is incorrect"
+            }
+        }
+    }
 }
 
 /**
  * @brief Composable that allow to modelize the login / register screen
  */
 @Composable
-fun LoginScreen(navController: NavController? = null) {
+fun LoginScreen(
+    navController: NavController? = null,
+    profilViewModel: profilViewModel,
+    localStorage: LocalStorage = LocalStorage()
+) {
     val isLogin = remember { mutableStateOf(true) }
     val error = remember { mutableStateOf("") }
 
@@ -232,9 +304,9 @@ fun LoginScreen(navController: NavController? = null) {
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button
 
             if (isLogin.value) { // If we are in login mode
-                CustomButton(onClick = { login(usernameLogin.value, passwordLogin.value, navController, error) }, text = "Sign in")
+                CustomButton(onClick = { login(usernameLogin.value, passwordLogin.value, navController, error, profilViewModel, localStorage) }, text = "Sign in")
             } else {
-                CustomButton(onClick = { register(username.value, email.value, password.value, confirmPassword.value, navController, error) }, text = "Sign up")
+                CustomButton(onClick = { register(username.value, email.value, password.value, confirmPassword.value, navController, error, profilViewModel, localStorage) }, text = "Sign up")
             }
 
             Spacer(modifier = Modifier.height(16.dp)) // Add a space of 16dp between the text and the button
@@ -368,6 +440,6 @@ fun BottomBorder(width: Dp = 2.dp, color: Color = Color.Red) {
 @Composable
 fun LoginScreenPreview() {
     DoBrazilTheme {
-        LoginScreen()
+        LoginScreen(profilViewModel = hiltViewModel())
     }
 }

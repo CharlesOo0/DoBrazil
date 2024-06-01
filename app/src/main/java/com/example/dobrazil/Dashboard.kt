@@ -1,13 +1,19 @@
 package com.example.dobrazil
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dobrazil.Entity.ProfilEntity
+import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.eventFinanciersViewModel
+import com.example.dobrazil.viewModel.eventInvitedViewModel
+import com.example.dobrazil.viewModel.eventViewModel
+import com.example.dobrazil.viewModel.expenseViewModel
 import com.example.dobrazil.viewModel.profilViewModel
 
 /**
@@ -15,15 +21,18 @@ import com.example.dobrazil.viewModel.profilViewModel
  */
 @Composable
 fun Dashboard(
-    viewModel: profilViewModel = hiltViewModel()
-) {
+        profiViewModel: profilViewModel = hiltViewModel(),
+        eventViewModel: eventViewModel = hiltViewModel(),
+        expenseViewModel: expenseViewModel = hiltViewModel(),
+        eventFinanciersViewModel: eventFinanciersViewModel = hiltViewModel(),
+        eventInvitedViewModel: eventInvitedViewModel = hiltViewModel(),
+        localStorage: LocalStorage = LocalStorage(null)
+    ) {
     val navController = rememberNavController()
-
-    viewModel.getAll() // Here so we can view the table Profil in the app inspection
 
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable("LoginScreen") {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, profilViewModel = profiViewModel, localStorage)
         }
         composable("HomeScreen") {
             Home(navController = navController)

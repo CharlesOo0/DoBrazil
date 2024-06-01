@@ -24,4 +24,16 @@ class ProfilRepository @Inject constructor(
 
     // Get all profils by status
     fun getById(id : Int) = dao.getById(id)
+
+    // Check connexion
+    fun checkConnexion(username: String, password: String) = dao.checkConnexion(username, password)
+
+    // Check if username is taken
+    fun checkUsername(username: String) = dao.checkUsername(username)
+
+    // Check if email is taken
+    fun checkEmail(email: String) = dao.checkEmail(email)
+
+    // Register a profil
+    fun register(email: String, username: String, password: String) = dao.register(email, username, password)
 }

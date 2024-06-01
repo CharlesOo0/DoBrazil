@@ -7,6 +7,7 @@ import com.example.dobrazil.EntityRepositories.ProfilRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -61,4 +62,41 @@ class profilViewModel @Inject public constructor(
             repository.update(event)
         }
     }
+
+    /**
+     * @brief Check connexion
+     */
+    suspend fun login(username: String, password: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            repository.checkConnexion(username, password) != null
+        }
+    }
+
+    /**
+     * @brief Check if username is taken
+     */
+    suspend fun checkUsername(username: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            repository.checkUsername(username) != null
+        }
+    }
+
+    /**
+     * @brief Check if email is taken
+     */
+    suspend fun checkEmail(email: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            repository.checkEmail(email) != null
+        }
+    }
+
+    /**
+     * @brief Register a profil
+     */
+    fun register(email: String, username: String, password: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.register(email, username, password)
+        }
+    }
+
 }

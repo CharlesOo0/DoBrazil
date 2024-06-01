@@ -13,6 +13,7 @@ import androidx.room.PrimaryKey
 data class ProfilEntity(
     @PrimaryKey(autoGenerate = true)
     val idProfil : Int?,
+    val email: String,
     val username: String,
     val password: String
 )
