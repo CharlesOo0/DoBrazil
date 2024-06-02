@@ -6,6 +6,7 @@ import com.example.dobrazil.Dao.EventDao
 import com.example.dobrazil.Dao.EventFinanciersCrossRefDao
 import com.example.dobrazil.Dao.EventInvitedCrossRefDao
 import com.example.dobrazil.Dao.ExpenseDao
+import com.example.dobrazil.Dao.FavoriteDao
 //import com.example.dobrazil.Dao.EventFinanciersCrossRefDao
 //import com.example.dobrazil.Dao.EventInvitedCrossRefDao
 //import com.example.dobrazil.Dao.ExpenseDao
@@ -51,4 +52,7 @@ object DataBaseModule {
 
     @Provides
     fun provideTaskEventDao(database: AppDatabase): EventDao = database.eventDao()
+
+    @Provides
+    fun provideFavoriteRelDao(database: AppDatabase): FavoriteDao = database.favoriteRelDao()
 }

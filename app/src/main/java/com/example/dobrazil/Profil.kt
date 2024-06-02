@@ -35,18 +35,37 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
+import com.example.dobrazil.Entity.ProfilEntity
+import com.example.dobrazil.data.LocalStorage
+import com.example.dobrazil.viewModel.profilViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * @brief Composable that allow to modelise the profil page
  */
 @Composable
-fun Profil(navController: NavController? = null) {
+fun Profil(
+    navController: NavController? = null,
+    profilViewModel: profilViewModel? = null,
+    localStorage: LocalStorage
+) {
     val scrollState = rememberScrollState()
     val page = remember { mutableStateOf(0) }
+    var userProfil : ProfilEntity? = null
+
+    // Get the user profil
+    if (profilViewModel != null && localStorage.username != "") {
+        LaunchedEffect(profilViewModel, localStorage.username) {
+            userProfil = profilViewModel.getByUsername(localStorage.username)
+        }
+    }
 
     Column( // Column that fill the entire screen
         modifier = Modifier
@@ -70,7 +89,11 @@ fun Profil(navController: NavController? = null) {
                     contentScale = ContentScale.Crop, // Crop the image to fit the circle
                     modifier = Modifier
                         .clip(CircleShape) // Clip the image to a circle
-                        .border(4.dp,Color(GreenVariantStrongColor),CircleShape) // Add a border to the image
+                        .border(
+                            4.dp,
+                            Color(GreenVariantStrongColor),
+                            CircleShape
+                        ) // Add a border to the image
                         .size(100.dp) // Size of the image
                 )
             }
@@ -80,12 +103,9 @@ fun Profil(navController: NavController? = null) {
                     .fillMaxWidth() // Fill the entire width of the screen
                     .padding(8.dp),
             ){
-                //Spacer(modifier = Modifier.padding(10.dp))
-                Text("Nom de l'utilisateur") // Username of the user
-                /* TODO Remplacer par le nom de l'utilisateur */
-                //Spacer(modifier = Modifier.padding(10.dp))
-                Text("Email de l'utilisateur") // Email of the user
-                /* TODO Remplacer par l'email de l'utilisateur */
+                Text("" + userProfil?.username) // Username of the user
+
+                Text("" + userProfil?.email) // Email of the user
             }
         }
 
@@ -140,23 +160,27 @@ fun Profil(navController: NavController? = null) {
                     LazyColumn {
                         when (page.value) {
                             0 -> { // If the user wants to see the event that are made by him / coming soon
+                                /*TODO*/
                                 items((0..10).toList()) { i ->
                                     Event()
                                     Spacer(modifier = Modifier.padding(8.dp))
                                 }
                             }
                             1 -> { // If the user wants to see the event that are made by him / currently
+                                /*TODO*/
                                 item {
                                     Event()
                                 }
                             }
                             2 -> { // If the user wants to see the favorite people
+                                /*TODO*/
                                 items((0..10).toList()) { i ->
                                     People()
                                     Spacer(modifier = Modifier.padding(8.dp))
                                 }
                             }
                             else -> {
+                                /*TODO*/
                                 item {
                                     Invitation()
                                 }
@@ -247,10 +271,10 @@ fun CategorieButton(onClick: () -> Unit, categorieIcon: Int, modifier: Modifier 
 
 /**
  * @brief Composable that moodelise people that you put in favorite
- * @param peopleId : Int that represent the id of the people
+ * @param peopleName : Int that represent the id of the people
  */
 @Composable
-fun People(peopleId: Int = 0) {
+fun People(peopleName: String = "") {
     Row ( // Row that contains the element of the people
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
@@ -293,6 +317,6 @@ fun People(peopleId: Int = 0) {
 @Composable
 fun ProfilPreview() {
     DoBrazilTheme {
-        Profil()
+        Profil(localStorage = LocalStorage(""))
     }
 }

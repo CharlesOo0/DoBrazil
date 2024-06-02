@@ -55,8 +55,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
+import com.example.dobrazil.data.LocalStorage
+import com.example.dobrazil.viewModel.eventViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.dobrazil.Entity.EventEntity
+import com.example.dobrazil.Entity.ProfilEntity
+import com.example.dobrazil.viewModel.profilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @brief Function that verify the information for creating Event
@@ -66,23 +76,58 @@ import com.example.appwithroomuv.R
  * @param dateStart : String the start date of the event
  * @param dateEnd : String the end date of the event
  * @param private : Boolean the privacy of the event
+ * @param inviteFavorite : Boolean the invitation of favorite person
  * @param navController : NavController the navigation controller
  * @param error : MutableState<String> the error message
+ * @param eventViewModel : eventViewModel the event view model
+ * @param profilViewModel : profilViewModel the profil view model
  */
-fun verifyCreateEvent(title: String, description: String, location: String, dateStart: String, dateEnd: String, private: Boolean, navController: NavController ?= null, error: MutableState<String>) {
+fun verifyCreateEvent(
+    title: String,
+    description: String,
+    location: String,
+    dateStart: String,
+    dateEnd: String,
+    private: Boolean,
+    inviteFavorite: Boolean,
+    navController: NavController ?= null,
+    error: MutableState<String>,
+    eventViewModel: eventViewModel,
+    profilViewModel: profilViewModel,
+    localStorage: LocalStorage
+) {
     if (title.isEmpty() || description.isEmpty() || location.isEmpty() || dateStart.isEmpty() || dateEnd.isEmpty()) { // If one of the field is empty
         error.value = "Please fill all the fields" // Error message
         return
     }
 
-    navController?.navigate("ChoseInvitedScreen") // Go to the next screen
+    eventViewModel.viewModelScope.launch(Dispatchers.IO) { // Launch a coroutine
+        val profil : ProfilEntity? = profilViewModel.getByUsername(localStorage.username) // Get the profil
+        var idHost = 0
+
+        if (profil?.idProfil != null) { // If the profil is null
+            idHost = profil.idProfil // Get the id of the profil
+        }
+
+        val event : EventEntity = EventEntity(null, dateStart, dateEnd, idHost, location, title, description, private, inviteFavorite) // Create the event
+        eventViewModel.insert(event) // Create the event
+
+        withContext(Dispatchers.Main) { // Switch to the main thread
+            navController?.navigate("ChoseInvitedScreen") // Navigate to the next screen
+        }
+    }
 }
 
 /**
  * @brief Composable that allow to modelize the create event screen
  */
 @Composable
-fun CreateEvent(navController: NavController? = null) {
+fun CreateEvent(
+    navController: NavController? = null,
+    eventViewModel: eventViewModel,
+    profilViewModel: profilViewModel,
+    localStorage: LocalStorage
+) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color
@@ -163,7 +208,7 @@ fun CreateEvent(navController: NavController? = null) {
                     Spacer(modifier = Modifier.padding(8.dp)) // Space between the input fields
 
                     Column(
-                        modifier =  Modifier
+                        modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color(IvoryColor).copy(alpha = Opacity))
                             .padding(8.dp)
@@ -213,7 +258,7 @@ fun CreateEvent(navController: NavController? = null) {
                             contentAlignment = Alignment.CenterEnd
                         ){
                             Button( // Button
-                                onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, navController, error) }, // Verify the information
+                                onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, inviteFavoritePerson.value, navController, error, eventViewModel, profilViewModel, localStorage) }, // Verify the information
                                 modifier = Modifier
                                     .padding(8.dp) // Padding
                             ){
@@ -328,7 +373,7 @@ fun CustomInputField(textState: MutableState<String>, label: String,  icon: (@Co
 @Composable
 fun CreateEventPreview() {
     DoBrazilTheme {
-        CreateEvent()
+        CreateEvent(eventViewModel = hiltViewModel(), profilViewModel = hiltViewModel(), localStorage = LocalStorage(""))
     }
 }
 

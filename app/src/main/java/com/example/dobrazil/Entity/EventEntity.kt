@@ -14,6 +14,7 @@ import java.util.Date
  * @param location: String, location of the event
  * @param title: String, title of the event
  * @param description: String, description of the event
+ * @param isPrivate: Boolean, if the event is private or not
  */
 @Entity
 data class EventEntity(
@@ -24,5 +25,7 @@ data class EventEntity(
     val idHost: Int,
     val location: String,
     val title: String,
-    val description: String
+    val description: String,
+    val isPrivate: Boolean,
+    val inviteFavorite: Boolean
 )

@@ -37,6 +37,15 @@ class profilViewModel @Inject public constructor(
     }
 
     /**
+     * @brief Get Profil by username
+     */
+    suspend fun getByUsername(username: String): ProfilEntity? {
+        return withContext(Dispatchers.IO) {
+            repository.getByUsername(username)
+        }
+    }
+
+    /**
      * @brief Insert Profil
      */
     fun insert(event: ProfilEntity){

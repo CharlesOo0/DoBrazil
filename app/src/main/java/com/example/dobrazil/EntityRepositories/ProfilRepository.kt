@@ -25,6 +25,9 @@ class ProfilRepository @Inject constructor(
     // Get all profils by status
     fun getById(id : Int) = dao.getById(id)
 
+    // Get a profil by its username
+    fun getByUsername(username: String) = dao.getByUsername(username)
+
     // Check connexion
     fun checkConnexion(username: String, password: String) = dao.checkConnexion(username, password)
 

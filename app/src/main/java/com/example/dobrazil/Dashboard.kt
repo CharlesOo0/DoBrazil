@@ -26,19 +26,19 @@ fun Dashboard(
         expenseViewModel: expenseViewModel = hiltViewModel(),
         eventFinanciersViewModel: eventFinanciersViewModel = hiltViewModel(),
         eventInvitedViewModel: eventInvitedViewModel = hiltViewModel(),
-        localStorage: LocalStorage = LocalStorage(null)
+        localStorage: LocalStorage = LocalStorage("")
     ) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "LoginScreen") {
-        composable("LoginScreen") {
+        composable("LoginScreen") { // Fini
             LoginScreen(navController = navController, profilViewModel = profiViewModel, localStorage)
         }
         composable("HomeScreen") {
             Home(navController = navController)
         }
         composable("CreateEventScreen") {
-            CreateEvent(navController = navController)
+            CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, localStorage)
         }
         composable("ChoseInvitedScreen") {
             ChoseInvited(navController = navController)
@@ -53,7 +53,7 @@ fun Dashboard(
             SearchFriend(navController = navController)
         }
         composable("ProfilScreen") {
-            Profil(navController = navController)
+            Profil(navController = navController, profilViewModel = profiViewModel, localStorage)
         }
     }
 

@@ -33,6 +33,10 @@ interface ProfilDao {
     @Query("SELECT * FROM ProfilEntity WHERE idProfil = :id")
     fun getById(id: Int): ProfilEntity
 
+    // Get a profil by its username
+    @Query("SELECT * FROM ProfilEntity WHERE username = :username")
+    fun getByUsername(username: String): ProfilEntity
+
     // Check the connexion
     @Query("SELECT * FROM ProfilEntity WHERE username = :email AND password = :password")
     fun checkConnexion(email: String, password: String): ProfilEntity?

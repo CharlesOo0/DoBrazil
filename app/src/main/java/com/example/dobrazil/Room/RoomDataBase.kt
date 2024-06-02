@@ -15,8 +15,9 @@ import com.example.dobrazil.Entity.*
     EventEntity::class,
     ExpenseEntity::class,
     EventInvitedCrossRef::class,
-    EventFinanciersCrossRef::class
-                     ], version = 3)
+    EventFinanciersCrossRef::class,
+    FavoriteRel::class
+                     ], version = 7)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profilDao(): ProfilDao // Dao for the Profil table
     abstract fun eventDao(): EventDao // Dao for the Event table
@@ -24,4 +25,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun eventInvitedCrossRefDao(): EventInvitedCrossRefDao // Dao for the EventInvitedCrossRef table
     abstract fun eventFinanciersCrossRefDao(): EventFinanciersCrossRefDao // Dao for the EventFinanciersCrossRef table
 
+    abstract fun favoriteRelDao(): FavoriteDao // Dao for the FavoriteRel table
 }
