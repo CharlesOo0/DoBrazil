@@ -28,12 +28,12 @@ interface FavoriteDao {
     @Query("SELECT * FROM FavoriteRel WHERE idFavoriteRel = :id")
     fun getById(id: Int): FavoriteRel
 
-    // Get a favorite relation by its profil id
-    @Query("SELECT * FROM FavoriteRel WHERE idProfil = :idProfil")
-    fun getByProfilId(idProfil: Int): List<FavoriteRel>
+    // Get a favorite relation by its follower
+    @Query("SELECT * FROM FavoriteRel WHERE idFollower = :id")
+    fun getByFollower(id: Int): List<FavoriteRel>
 
-    // Get a favorite relation by its event id
-    @Query("SELECT * FROM FavoriteRel WHERE idEvent = :idEvent")
-    fun getByEventId(idEvent: Int): List<FavoriteRel>
-
+    // Get a favorite relation by its follow
+    @Query("SELECT * FROM FavoriteRel WHERE idFollow = :id")
+    fun getByFollow(id: Int): List<FavoriteRel>
+    
 }

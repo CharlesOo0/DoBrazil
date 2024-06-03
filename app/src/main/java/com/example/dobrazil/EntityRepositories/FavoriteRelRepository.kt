@@ -22,9 +22,9 @@ class FavoriteRelRepository @Inject constructor(
     // Get a favorite relation by its id
     fun getById(id: Int) = dao.getById(id)
 
-    // Get a favorite relation by its profil id
-    fun getByProfilId(idProfil: Int) = dao.getByProfilId(idProfil)
+    // Get a favorite relation by its follower
+    fun getByFollower(id: Int) = dao.getByFollower(id)
 
-    // Get a favorite relation by its event id
-    fun getByEventId(idEvent: Int) = dao.getByEventId(idEvent)
+    // Get a favorite relation by its follow
+    fun getByFollow(id: Int) = dao.getByFollow(id)
 }

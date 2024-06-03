@@ -36,6 +36,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,9 +63,14 @@ import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.viewModel.eventViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dobrazil.Entity.EventEntity
+import com.example.dobrazil.Entity.EventInvitedCrossRef
+import com.example.dobrazil.Entity.FavoriteRel
 import com.example.dobrazil.Entity.ProfilEntity
+import com.example.dobrazil.viewModel.eventInvitedViewModel
+import com.example.dobrazil.viewModel.favoriteViewModel
 import com.example.dobrazil.viewModel.profilViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -94,6 +100,8 @@ fun verifyCreateEvent(
     error: MutableState<String>,
     eventViewModel: eventViewModel,
     profilViewModel: profilViewModel,
+    favoriteViewModel: favoriteViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
     localStorage: LocalStorage
 ) {
     if (title.isEmpty() || description.isEmpty() || location.isEmpty() || dateStart.isEmpty() || dateEnd.isEmpty()) { // If one of the field is empty
@@ -101,7 +109,7 @@ fun verifyCreateEvent(
         return
     }
 
-    eventViewModel.viewModelScope.launch(Dispatchers.IO) { // Launch a coroutine
+    eventViewModel.viewModelScope.launch(Dispatchers.Main) { // Launch a coroutine
         val profil : ProfilEntity? = profilViewModel.getByUsername(localStorage.username) // Get the profil
         var idHost = 0
 
@@ -110,10 +118,20 @@ fun verifyCreateEvent(
         }
 
         val event : EventEntity = EventEntity(null, dateStart, dateEnd, idHost, location, title, description, private, inviteFavorite) // Create the event
-        eventViewModel.insert(event) // Create the event
+        eventViewModel.insert(event) // Create the event and get the inserted event id
 
-        withContext(Dispatchers.Main) { // Switch to the main thread
-            navController?.navigate("ChoseInvitedScreen") // Navigate to the next screen
+        if (inviteFavorite) { // If the event owner want to invite favorite person
+            favoriteViewModel.viewModelScope.launch(Dispatchers.Main) {
+                if (localStorage.idUser != null) {
+                    // Get the favorite list
+                    val favoriteList : List<FavoriteRel> = favoriteViewModel.getByFollower(localStorage.idUser!!) // Get the favorite list
+
+                    for (favorite in favoriteList) { // For each favorite
+                        val eventInvitedCrossRef = EventInvitedCrossRef(event.idEvent!!, favorite.idFollow)
+                        eventInvitedViewModel.insert(eventInvitedCrossRef) // Invite the favorite person
+                    }
+                }
+            }
         }
     }
 }
@@ -126,6 +144,8 @@ fun CreateEvent(
     navController: NavController? = null,
     eventViewModel: eventViewModel,
     profilViewModel: profilViewModel,
+    favoriteViewModel: favoriteViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
     localStorage: LocalStorage
 ) {
     Column ( // Column that contains the screen
@@ -258,7 +278,7 @@ fun CreateEvent(
                             contentAlignment = Alignment.CenterEnd
                         ){
                             Button( // Button
-                                onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, inviteFavoritePerson.value, navController, error, eventViewModel, profilViewModel, localStorage) }, // Verify the information
+                                onClick = { verifyCreateEvent(title.value, description.value, location.value, dateStart.value, dateEnd.value, private.value, inviteFavoritePerson.value, navController, error, eventViewModel, profilViewModel, favoriteViewModel, eventInvitedViewModel, localStorage) }, // Verify the information
                                 modifier = Modifier
                                     .padding(8.dp) // Padding
                             ){
@@ -373,7 +393,7 @@ fun CustomInputField(textState: MutableState<String>, label: String,  icon: (@Co
 @Composable
 fun CreateEventPreview() {
     DoBrazilTheme {
-        CreateEvent(eventViewModel = hiltViewModel(), profilViewModel = hiltViewModel(), localStorage = LocalStorage(""))
+        CreateEvent(eventViewModel = hiltViewModel(), profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), localStorage = LocalStorage(""))
     }
 }
 

@@ -14,6 +14,7 @@ import com.example.dobrazil.viewModel.eventFinanciersViewModel
 import com.example.dobrazil.viewModel.eventInvitedViewModel
 import com.example.dobrazil.viewModel.eventViewModel
 import com.example.dobrazil.viewModel.expenseViewModel
+import com.example.dobrazil.viewModel.favoriteViewModel
 import com.example.dobrazil.viewModel.profilViewModel
 
 /**
@@ -26,6 +27,7 @@ fun Dashboard(
         expenseViewModel: expenseViewModel = hiltViewModel(),
         eventFinanciersViewModel: eventFinanciersViewModel = hiltViewModel(),
         eventInvitedViewModel: eventInvitedViewModel = hiltViewModel(),
+        favoriteViewModel: favoriteViewModel = hiltViewModel(),
         localStorage: LocalStorage = LocalStorage("")
     ) {
     val navController = rememberNavController()
@@ -38,7 +40,7 @@ fun Dashboard(
             Home(navController = navController)
         }
         composable("CreateEventScreen") {
-            CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, localStorage)
+            CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, favoriteViewModel, eventInvitedViewModel, localStorage)
         }
         composable("ChoseInvitedScreen") {
             ChoseInvited(navController = navController)

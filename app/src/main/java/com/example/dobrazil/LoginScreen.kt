@@ -131,6 +131,8 @@ fun register(
         withContext(Dispatchers.Main) { // Switch to the main thread
             localStorage.username = username // Save the username in the local storage
             profilViewModel.register(email, username, password) // Register the user
+            var profil = profilViewModel.getByUsername(username) // Get the profil of the user
+            localStorage.idUser = profil?.idProfil // Save the id of the user in the local storage
             navController?.navigate("HomeScreen") // Navigate to the home screen
         }
     }
@@ -168,6 +170,8 @@ fun login(
             withContext(Dispatchers.Main) { // Switch to the main thread
                 // Save the username in the local storage
                 localStorage.username = username
+                var profil = profilViewModel.getByUsername(username) // Get the profil of the user
+                localStorage.idUser = profil?.idProfil // Save the id of the user in the local storage
                 // Navigate to the home screen
                 navController?.navigate("HomeScreen")
             }

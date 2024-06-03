@@ -5,4 +5,5 @@ package com.example.dobrazil.data
  */
 data class LocalStorage(
     var username: String = "",
+    var idUser: Int? = 0,
 )

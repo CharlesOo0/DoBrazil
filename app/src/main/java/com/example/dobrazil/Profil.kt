@@ -1,5 +1,7 @@
 package com.example.dobrazil
 
+import android.provider.Settings.Global
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,16 +38,21 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
 import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.viewModel.profilViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @brief Composable that allow to modelise the profil page
@@ -58,12 +65,20 @@ fun Profil(
 ) {
     val scrollState = rememberScrollState()
     val page = remember { mutableStateOf(0) }
-    var userProfil : ProfilEntity? = null
+    var userProfil : MutableState<ProfilEntity>? = remember { mutableStateOf(ProfilEntity(0, null, "", "", "") ) }
+    val coroutineScope = rememberCoroutineScope()
 
     // Get the user profil
     if (profilViewModel != null && localStorage.username != "") {
-        LaunchedEffect(profilViewModel, localStorage.username) {
-            userProfil = profilViewModel.getByUsername(localStorage.username)
+        LaunchedEffect(Dispatchers.Main) { // Launch the coroutine in the main thread
+            val user = coroutineScope.async { // Launch the coroutine in the coroutineScope
+                profilViewModel.getByUsername(localStorage.username) // Get the user profil
+            }
+            try { // Try to get the user profil
+                userProfil?.value = user.await()!! // Get the user profil
+            } catch (e: Exception) { // Catch the exception
+                Log.d("Profil", "Error : " + e.message)
+            }
         }
     }
 
@@ -103,9 +118,15 @@ fun Profil(
                     .fillMaxWidth() // Fill the entire width of the screen
                     .padding(8.dp),
             ){
-                Text("" + userProfil?.username) // Username of the user
+                if (userProfil != null && userProfil?.value?.username != "" && userProfil?.value?.email != "") {
+                    Text(userProfil?.value?.username + "") // Username of the user
 
-                Text("" + userProfil?.email) // Email of the user
+                    Text(userProfil?.value?.email + "") // Email of the user
+                }else {
+                    Text("Username") // Username of the user
+
+                    Text("Email") // Email of the user
+                }
             }
         }
 
