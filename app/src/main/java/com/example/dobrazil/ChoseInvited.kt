@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.lifecycle.viewModelScope
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,15 +45,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
+import com.example.dobrazil.Entity.FavoriteRel
+import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.favoriteViewModel
+import com.example.dobrazil.viewModel.profilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * @brief ChoseInvited composable that modelise the ChoseInvited screen
+ * @param profilViewModel profilViewModel that contains the profilViewModel
+ * @param favoriteViewModel favoriteViewModel that contains the favoriteViewModel
+ * @param navController NavController that contains the NavController
  */
 @Composable
-fun ChoseInvited(navController: NavController? = null) {
+fun ChoseInvited(
+    profilViewModel: profilViewModel,
+    favoriteViewModel: favoriteViewModel,
+    navController: NavController? = null,
+    localStorage: LocalStorage
+) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color
@@ -84,7 +102,7 @@ fun ChoseInvited(navController: NavController? = null) {
                         contentDescription = "Back",
                         modifier = Modifier
                             .size(45.dp)
-                            .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                            .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
                             .padding(8.dp)
                     )
 
@@ -134,7 +152,7 @@ fun ChoseInvited(navController: NavController? = null) {
                         .verticalScroll(scrollState)
                 ) {
                     // TODO Query the search value to get the contacts and print them
-                    Contact(mode = 1)
+                    Contact(mode = 1, favoriteViewModel = hiltViewModel())
                 }
             }
         }
@@ -176,12 +194,19 @@ fun SearchBar(
 
 /**
  * @brief Composable that modelise a contact
+ * @param nameCaller: String that contains the name of the caller
  * @param name: String that contains the name of the contact
  * @param avatar: String that contains the avatar of the contact
  * @param mode: Int if its 0 its the invite mode, if its 1 its the add mode, if its 2 its the delete mode
  */
 @Composable
-fun Contact(name: String = "", avatar: String = "", mode: Int = 0) {
+fun Contact(
+    nameCaller: String = "",
+    name: String = "",
+    avatar: String? = "",
+    mode: Int = 0,
+    favoriteViewModel: favoriteViewModel
+) {
     var invited = remember { mutableStateOf(false) } // State of the invitation
 
 
@@ -208,26 +233,42 @@ fun Contact(name: String = "", avatar: String = "", mode: Int = 0) {
                 .size(70.dp)
         )
 
-        Text("Nom de la personne") // Name of the people
-        /* TODO Remplacer par le nom de la personne */
+        Text(name) // Name of the people
 
         if (mode == 0) { // If we are in add mode
             Icon( // Add button
                 Icons.Default.Add,
                 contentDescription = "Add",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = {
+                        favoriteViewModel.viewModelScope.launch(Dispatchers.Main) {
+                            favoriteViewModel.insertWithUsernames(nameCaller, name) // Insert the contact in the favorite list
+                        }
+                    }) // Make the icon clickable
             )
         } else if (mode == 1) { // If we are in invite mode
             Box {
                 BooleanInputField(switchState = invited) // Switch to invite the people
+                if (invited.value) {
+                    LaunchedEffect(Dispatchers.Main) {
+                        favoriteViewModel.insertWithUsernames(nameCaller, name) // Insert the contact in the favorite list
+                    }
+                }else {
+                    LaunchedEffect(Dispatchers.Main) {
+                        favoriteViewModel.deleteWithUsernames(nameCaller, name) // Insert the contact in the favorite list
+                    }
+                }
             }
         } else {
             Icon( // Delete button
                 Icons.Default.Delete,
                 contentDescription = "Delete",
                 modifier = Modifier
-                    .clickable(onClick = { /*TODO*/ }) // Make the icon clickable
+                    .clickable(onClick = {
+                        favoriteViewModel.viewModelScope.launch(Dispatchers.Main) {
+                            favoriteViewModel.deleteWithUsernames(nameCaller, name) // Insert the contact in the favorite list
+                        }
+                    }) // Make the icon clickable
             )
 
         }
@@ -243,6 +284,6 @@ fun Contact(name: String = "", avatar: String = "", mode: Int = 0) {
 @Composable
 fun ChoseInvitedPreview() {
     DoBrazilTheme {
-        ChoseInvited()
+        ChoseInvited(profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }

@@ -71,4 +71,31 @@ class favoriteViewModel @Inject public constructor(
             repository.delete(event)
         }
     }
+
+    /**
+     * @brief Insert FavoriteRel using usernames of follower and follow
+     */
+    fun insertWithUsernames(followerUsername: String, followUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertWithUsernames(followerUsername, followUsername)
+        }
+    }
+
+    /**
+     * @brief Get FavoriteRel by follower and follow
+     */
+    fun getByFollowerAndFollow(idFollower: Int, idFollow: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getByFollowerAndFollow(idFollower, idFollow)
+        }
+    }
+
+    /**
+     * @brief Delete FavoriteRel using usernames of follower and follow
+     */
+    fun deleteWithUsernames(followerUsername: String, followUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWithUsernames(followerUsername, followUsername)
+        }
+    }
 }

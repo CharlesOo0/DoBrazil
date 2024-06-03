@@ -1,5 +1,6 @@
 package com.example.dobrazil
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appwithroomuv.R
+import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.viewModel.profilViewModel
 import kotlinx.coroutines.Dispatchers
@@ -129,11 +131,17 @@ fun register(
         // If the username and the email are not taken
         // Register the user
         withContext(Dispatchers.Main) { // Switch to the main thread
+
+            val profil = ProfilEntity(null, null, email, username, password)
             localStorage.username = username // Save the username in the local storage
-            profilViewModel.register(email, username, password) // Register the user
-            var profil = profilViewModel.getByUsername(username) // Get the profil of the user
-            localStorage.idUser = profil?.idProfil // Save the id of the user in the local storage
-            navController?.navigate("HomeScreen") // Navigate to the home screen
+            async { profilViewModel.insert(profil) }.await() // Insert the profil in the database
+
+            val profilGet = async { profilViewModel.getByUsername(username) } // Get the profil of the user
+
+            localStorage.idUser = profilGet.await()?.idProfil // Save the id of the user in the local storage
+
+            // Navigate to the home screen
+            navController?.navigate("HomeScreen")
         }
     }
 }

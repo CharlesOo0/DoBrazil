@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Delete
+import androidx.room.Transaction
 import com.example.dobrazil.Entity.FavoriteRel
 
 /**
@@ -35,5 +36,30 @@ interface FavoriteDao {
     // Get a favorite relation by its follow
     @Query("SELECT * FROM FavoriteRel WHERE idFollow = :id")
     fun getByFollow(id: Int): List<FavoriteRel>
+
+    // Get a profil id by its username
+    @Query("SELECT idProfil FROM ProfilEntity WHERE username = :username")
+    fun getIdByUsername(username: String): Int
+
+    // Insert a favorite relation using usernames of follower and follow
+    @Transaction
+    fun insertWithUsernames(followerUsername: String, followUsername: String) {
+        val idFollower = getIdByUsername(followerUsername)
+        val idFollow = getIdByUsername(followUsername)
+        insert(FavoriteRel(null, idFollower, idFollow))
+    }
+
+    // Get a favorite relation by its follower and follow
+    @Query("SELECT * FROM FavoriteRel WHERE idFollower = :idFollower AND idFollow = :idFollow")
+    fun getByFollowerAndFollow(idFollower: Int, idFollow: Int): FavoriteRel
+
+    // Delete a favorite relation using usernames of follower and follow
+    @Transaction
+    fun deleteWithUsernames(followerUsername: String, followUsername: String) {
+        val idFollower = getIdByUsername(followerUsername)
+        val idFollow = getIdByUsername(followUsername)
+        val favoriteRel = getByFollowerAndFollow(idFollower, idFollow)
+        delete(favoriteRel)
+    }
     
 }

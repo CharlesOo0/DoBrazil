@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
 
@@ -226,7 +227,7 @@ fun AddPeople() {
             .padding(8.dp)
     ) {
         for (i in 0..10) {
-            Contact(mode = 1)
+            Contact(mode = 1, favoriteViewModel = hiltViewModel())
             Spacer(modifier = Modifier.size(4.dp))
         }
     }
@@ -245,7 +246,7 @@ fun DeletePeople() {
             .padding(8.dp)
     ) {
         for (i in 0..10) {
-            Contact(mode = 2)
+            Contact(mode = 2, favoriteViewModel = hiltViewModel())
             Spacer(modifier = Modifier.size(4.dp))
         }
     }

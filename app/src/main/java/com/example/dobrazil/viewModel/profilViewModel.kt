@@ -108,4 +108,13 @@ class profilViewModel @Inject public constructor(
         }
     }
 
+    /**
+     * @brief Search not friend profil
+     */
+    suspend fun searchNotFriendProfil(search: String, idProfil: Int): List<ProfilEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.searchNotFriendProfil(search, idProfil)
+        }
+    }
+
 }

@@ -53,4 +53,8 @@ interface ProfilDao {
     @Query("INSERT INTO ProfilEntity (email, username, password) VALUES (:email, :username, :password)")
     fun register(email: String, username: String, password: String)
 
+    // Search not friend profil
+    @Query("SELECT * FROM ProfilEntity WHERE username LIKE '%' || :search || '%' AND idProfil NOT IN (SELECT idFollow FROM FavoriteRel WHERE idFollower = :idProfil) AND idProfil != :idProfil")
+    fun searchNotFriendProfil(search: String, idProfil: Int): List<ProfilEntity>
+
 }

@@ -43,7 +43,7 @@ fun Dashboard(
             CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, favoriteViewModel, eventInvitedViewModel, localStorage)
         }
         composable("ChoseInvitedScreen") {
-            ChoseInvited(navController = navController)
+            ChoseInvited(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, localStorage = localStorage)
         }
         composable("ManageEventScreen") {
             ManageEvent(navController = navController)
@@ -51,8 +51,8 @@ fun Dashboard(
         composable("BudgetScreen") {
             Budget(navController = navController)
         }
-        composable("SearchFriendScreen") {
-            SearchFriend(navController = navController)
+        composable("SearchFriendScreen") { // Fini
+            SearchFriend(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, localStorage = localStorage)
         }
         composable("ProfilScreen") {
             Profil(navController = navController, profilViewModel = profiViewModel, localStorage)

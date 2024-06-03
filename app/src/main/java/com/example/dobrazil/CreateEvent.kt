@@ -36,7 +36,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,6 +86,9 @@ import kotlinx.coroutines.withContext
  * @param error : MutableState<String> the error message
  * @param eventViewModel : eventViewModel the event view model
  * @param profilViewModel : profilViewModel the profil view model
+ * @param favoriteViewModel : favoriteViewModel the favorite view model
+ * @param eventInvitedViewModel : eventInvitedViewModel the event invited view model
+ * @param localStorage : LocalStorage the local storage
  */
 fun verifyCreateEvent(
     title: String,

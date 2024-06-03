@@ -1,5 +1,6 @@
 package com.example.dobrazil
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,21 +15,41 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.dobrazil.Entity.ProfilEntity
+import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.favoriteViewModel
+import com.example.dobrazil.viewModel.profilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * @brief SearchFriend composable that modelise the SearchFriend screen
  * @param mode Int that represent the mode of the screen Add Friend or Invite People
+ * @param profilViewModel profilViewModel that contains the profilViewModel
+ * @param favoriteViewModel favoriteViewModel that contains the favoriteViewModel
+ * @param navController NavController that contains the NavController
  * */
 @Composable
-fun SearchFriend(mode : Int = 0, navController: NavController? = null) {
+fun SearchFriend(
+    mode : Int = 0,
+    profilViewModel: profilViewModel,
+    favoriteViewModel: favoriteViewModel,
+    localStorage: LocalStorage,
+    navController: NavController? = null) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .background(Color(IvoryColor)) // Background color
@@ -62,11 +83,24 @@ fun SearchFriend(mode : Int = 0, navController: NavController? = null) {
         ) // Border between top bar and form
 
         val search = remember { mutableStateOf("") } // Search value
+        var listSearch : MutableState<List<ProfilEntity>> = remember { mutableStateOf(listOf()) } // List of profil
+
 
         // Search bar
         SearchBar(
             value = search.value, // Connect the search state to the SearchBar
-            onValueChange = { search.value = it }, // Update the search state when the value changes
+            onValueChange = {
+                search.value = it
+            }, // Update the search state when the value changes
+            onSearchExecute = {
+                profilViewModel.viewModelScope.launch(Dispatchers.Main) { // Launch a coroutine
+
+                    if (search.value != "") { // If the search value is not empty
+                        listSearch.value = async { profilViewModel.searchNotFriendProfil(search.value, localStorage.idUser!!) }.await()
+                    }
+
+                }
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
@@ -82,8 +116,10 @@ fun SearchFriend(mode : Int = 0, navController: NavController? = null) {
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            // TODO Query the search value to get the contacts and print them
-            Contact(mode = mode)
+            for (profil in listSearch.value) { // For each profil in the list
+                Log.d("Profil", profil.username)
+                Contact(localStorage.username, profil.username, profil.avatarLink, 0, favoriteViewModel = favoriteViewModel) // Display the contact
+            }
         }
     }
 }
@@ -95,6 +131,6 @@ fun SearchFriend(mode : Int = 0, navController: NavController? = null) {
 @Composable
 fun SearchFriendPreview() {
     DoBrazilTheme {
-        SearchFriend()
+        SearchFriend(profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }

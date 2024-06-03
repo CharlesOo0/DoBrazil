@@ -39,4 +39,7 @@ class ProfilRepository @Inject constructor(
 
     // Register a profil
     fun register(email: String, username: String, password: String) = dao.register(email, username, password)
+
+    // Search not friend profil
+    fun searchNotFriendProfil(search: String, idProfil: Int) = dao.searchNotFriendProfil(search, idProfil)
 }
