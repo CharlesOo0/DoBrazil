@@ -48,6 +48,7 @@ import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.viewModel.profilViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dobrazil.viewModel.eventViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -183,14 +184,14 @@ fun Profil(
                             0 -> { // If the user wants to see the event that are made by him / coming soon
                                 /*TODO*/
                                 items((0..10).toList()) { i ->
-                                    Event()
+//                                    Event(eventViewModel)
                                     Spacer(modifier = Modifier.padding(8.dp))
                                 }
                             }
                             1 -> { // If the user wants to see the event that are made by him / currently
                                 /*TODO*/
                                 item {
-                                    Event()
+//                                    Event()
                                 }
                             }
                             2 -> { // If the user wants to see the favorite people
@@ -253,7 +254,7 @@ fun Invitation(eventId: Int = 0) {
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-        Event(eventId, false) // Show the event that the user is invited to
+//        Event(eventId, false) // Show the event that the user is invited to
 
         Spacer(modifier = Modifier.padding(8.dp))
 

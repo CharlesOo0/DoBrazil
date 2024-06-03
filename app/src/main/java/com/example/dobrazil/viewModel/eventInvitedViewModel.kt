@@ -7,6 +7,7 @@ import com.example.dobrazil.EntityRepositories.EventInvitedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -97,4 +98,14 @@ class eventInvitedViewModel @Inject public constructor(
             repository.deleteWithUsernames(eventId, profileUsername)
         }
     }
+
+    /**
+     * @brief Get the number of person that are going to an event
+     */
+    suspend fun getNumberOfPersonGoing(eventId: Int) : Int {
+        return withContext(Dispatchers.IO) {
+            repository.getNumberOfPersonGoing(eventId)
+        }
+    }
+
 }

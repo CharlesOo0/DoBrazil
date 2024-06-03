@@ -39,7 +39,7 @@ fun Dashboard(
             LoginScreen(navController = navController, profilViewModel = profiViewModel, localStorage)
         }
         composable("HomeScreen") {
-            Home(navController = navController)
+            Home(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, eventInvitedViewModel = eventInvitedViewModel, localStorage = localStorage)
         }
         composable("CreateEventScreen") {// Fini
             CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, favoriteViewModel, eventInvitedViewModel, localStorage)

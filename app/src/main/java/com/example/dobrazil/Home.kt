@@ -1,5 +1,6 @@
 package com.example.dobrazil
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,6 +38,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,14 +48,34 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
+import com.example.dobrazil.Entity.EventEntity
+import com.example.dobrazil.data.LocalStorage
+import com.example.dobrazil.viewModel.eventInvitedViewModel
+import com.example.dobrazil.viewModel.eventViewModel
+import com.example.dobrazil.viewModel.profilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * @brief Composable that allow to modelise the Home page
+ * @param navController : NavController that allow to navigate between the screen
+ * @param eventViewModel : eventViewModel that allow to interact with the event
+ * @param profilViewModel : profilViewModel that allow to interact with the profil
+ * @param eventInvitedViewModel : eventInvitedViewModel that allow to interact with the eventInvited
+ * @param localStorage : LocalStorage that allow to interact with the local storage
  */
 @Composable
-fun Home(navController: NavController? = null) {
+fun Home(
+    navController: NavController? = null,
+    eventViewModel: eventViewModel,
+    profilViewModel: profilViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
+    localStorage: LocalStorage
+){
     val scrollState = rememberScrollState()
 
     Column (
@@ -89,16 +113,32 @@ fun Home(navController: NavController? = null) {
 
             Column {
 
-                Column( // Column that contains the events
+                var listEventMutable : List<EventEntity> by remember { mutableStateOf(listOf()) } // List of event
+                LaunchedEffect(Dispatchers.Main) { // Launch the effect
+                    val listEvent = eventViewModel.getEventsWhereNotInvitedOrCreator(localStorage.idUser!!)// Get the list of event
+
+                    withContext(Dispatchers.Main) { // Change the context to the main thread
+                        listEventMutable = listEvent // Update the list of event
+                    }
+                }
+
+                LazyColumn( // Column that contains the events
                     modifier = Modifier
                         .fillMaxWidth() // Fill the entire width of the screen
                         .fillMaxHeight(0.90f) // Fill 90% of the height of the screen
-                        .verticalScroll(scrollState) // Add a scroll to the column to see all the element
                         .padding(10.dp)
                 ) {
-                    for (i in 0..10) { // For each event
-                        Event(forProfil = false) // Show the event
-                        Spacer(modifier = Modifier.size(10.dp)) // Add a space between each event
+                    items(listEventMutable.size) { index -> // For each event in the list
+                        Event( // Show the event
+                            eventViewModel = eventViewModel,
+                            profilViewModel = profilViewModel,
+                            eventInvitedViewModel = eventInvitedViewModel,
+                            localStorage = localStorage,
+                            eventId = listEventMutable.get(index).idEvent!!,
+                            forProfil = false,
+                            navController = navController
+                        )
+                        Spacer(modifier = Modifier.size(10.dp)) // Add a space between the events
                     }
                 }
 
@@ -118,7 +158,7 @@ fun Home(navController: NavController? = null) {
                         contentDescription = "Create an event",
                         modifier = Modifier
                             .size(40.dp)
-                            .clickable { navController?.navigate("CreateEventScreen")}
+                            .clickable { navController?.navigate("CreateEventScreen") }
                     )
 
                     Icon( // Icon to search for people
@@ -147,9 +187,31 @@ fun Home(navController: NavController? = null) {
  * @param eventId : Int that represent the id of the event
  * @param forProfil : Boolean that represent if the event is for the profil page
  * @param navController : NavController that allow to navigate between the screen
+ * @param eventViewModel : eventViewModel that allow to interact with the event
+ * @param profilViewModel : profilViewModel that allow to interact with the profil
+ * @param eventInvitedViewModel : eventInvitedViewModel that allow to interact with the eventInvited
+ * @param localStorage : LocalStorage that allow to interact with the local storage
  */
 @Composable
-fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavController? = null) {
+fun Event(
+    eventViewModel: eventViewModel,
+    profilViewModel: profilViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
+    localStorage: LocalStorage,
+    eventId: Int = 0,
+    forProfil: Boolean = true,
+    navController: NavController? = null
+) {
+    var eventMutable : EventEntity by remember { mutableStateOf(EventEntity(null, "", "", 0, "", "", "", false, false)) }
+
+    LaunchedEffect(Dispatchers.IO){
+        val eventGet = eventViewModel.getById(eventId)
+
+        withContext(Dispatchers.Main){
+            eventMutable = eventGet
+        }
+    }
+
     Row ( // Row that contains the element of the event
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp)) // Clip the container to a rounded corner
@@ -189,25 +251,34 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavControl
                     .fillMaxWidth()
                     .fillMaxHeight(0.15f)
             ){
-                Text("Titre") // Name of the event
-                /* TODO Remplacer par le nom de l'événement */
-                Text("Lieu") // Location of the event
-                /* TODO Remplacer par le lieu de l'événement */
-                Text("X pers.") // Number of person that are going to the event
-                /* TODO Remplacer par le nombre de personne qui vont à l'événement */
+                Text(eventMutable.title) // Name of the event
 
-                if (forProfil) { // If the event is for the profil page
-                    Box {
-                        /* TODO Check if the user is the creator of the event */
-                        DropDownMenu(navController = navController)
+                Text(eventMutable.location) // Location of the event
+
+
+                val numberPersMutable : MutableState<Int> = remember { mutableStateOf(0) }
+                LaunchedEffect(Dispatchers.IO) {
+                    val numberPerson = eventInvitedViewModel.getNumberOfPersonGoing(eventId)
+
+                    withContext(Dispatchers.Main){
+                        numberPersMutable.value = numberPerson
                     }
-                } else {
-                    Icon (
+                }
+                Text(numberPersMutable.value.toString() + " Pers") // Number of person going to the event
+
+                if (forProfil && eventMutable.idHost == localStorage.idUser) { // If the event is for the profil page
+                    Box {
+                        DropDownMenu(navController = navController, eventViewModel = eventViewModel, event = eventMutable, isCreator = true)
+                    }
+                } else { // If the event is not for the profil page
+                    Icon ( // Icon to participate to the event
                         Icons.Default.Add,
                         contentDescription = "Participer",
                         modifier = Modifier
                             .size(20.dp)
-                            .clickable { /* TODO allow to participate to an event*/ }
+                            .clickable { // When the user click on the icon
+                                eventInvitedViewModel.insertWithUsernames(eventId, localStorage.username)
+                            }
                     )
                 }
             }
@@ -219,8 +290,7 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavControl
                     .fillMaxHeight(0.85f)
                     .border(1.dp, Color(GreenVariantStrongColor))
             ){
-                Text("Description") // Description of the event
-                /* TODO Remplacer par la description de l'événement */
+                Text(eventMutable.description) // Description of the event
             }
 
             Row ( // Row that contains the date of the event
@@ -229,14 +299,17 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavControl
                     .fillMaxWidth()
                     .fillMaxHeight()
             ){
-                Text("Date de début") // Date of the beginning of the event
-                /* TODO Remplacer par la date de début de l'événement */
-                Text("Date de fin") // Date of the end of the event
-                /* TODO Remplacer par la date de fin de l'événement */
+                Text(eventMutable.startDate) // Date of the beginning of the event
+
+                Text(eventMutable.endDate) // Date of the end of the event
+
 
                 if (forProfil) { // If the event is for the profil page
-                    Text("O/F") // Statut de l'evenement
-                    /* TODO Remplacer par le statut de l'evenement */
+                    if (eventMutable.isPrivate) { //
+                        Text("Private")
+                    } else {
+                        Text("Public")
+                    }
                 }
             }
         }
@@ -251,7 +324,13 @@ fun Event(eventId: Int = 0, forProfil: Boolean = true, navController: NavControl
  * @param navController : NavController that allow to navigate between the screen
  */
 @Composable
-fun DropDownMenu(isCreator : Boolean = false, isEvent : Boolean = true, navController: NavController? = null){
+fun DropDownMenu(
+    isCreator : Boolean = false,
+    isEvent : Boolean = true,
+    navController: NavController? = null,
+    eventViewModel: eventViewModel,
+    event: EventEntity
+){
     var expanded by remember { mutableStateOf(false) }
 
     Box { // Box that contains the DropDownMenu
@@ -295,7 +374,7 @@ fun DropDownMenu(isCreator : Boolean = false, isEvent : Boolean = true, navContr
 @Composable
 fun HomePreview() {
     DoBrazilTheme {
-        Home()
+        Home(profilViewModel = hiltViewModel(), eventViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }
 

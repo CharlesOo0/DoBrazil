@@ -36,4 +36,7 @@ class EventInvitedRepository @Inject constructor(
 
     // Delete an event-invited cross reference using usernames of event and profile
     suspend fun deleteWithUsernames(eventId: Int, profileUsername: String) = dao.deleteWithUsernames(eventId, profileUsername)
+
+    // Give the number of person that are going to an event
+    fun getNumberOfPersonGoing(eventId: Int) = dao.getNumberOfInvitedPeople(eventId)
 }

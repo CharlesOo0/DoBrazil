@@ -40,4 +40,12 @@ interface EventDao {
     // Check title already exist
     @Query("SELECT * FROM EventEntity WHERE title = :title")
     fun checkTitle(title: String): EventEntity?
+
+    @Query("""
+    SELECT * FROM EventEntity 
+    WHERE idEvent NOT IN (
+        SELECT eventId FROM EventInvitedCrossRef WHERE profilId = :profilId
+    ) AND idHost != :profilId
+""")
+    fun getEventsWhereNotInvitedOrCreator(profilId: Int): List<EventEntity>
 }

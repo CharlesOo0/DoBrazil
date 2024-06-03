@@ -60,4 +60,8 @@ interface EventInvitedCrossRefDao {
             delete(existingRelation)
         }
     }
+
+    // Give the number of person that are going to an event
+    @Query("SELECT COUNT(*) FROM EventInvitedCrossRef WHERE eventId = :eventId")
+    fun getNumberOfInvitedPeople(eventId: Int): Int
 }

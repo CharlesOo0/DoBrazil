@@ -30,4 +30,7 @@ class EventRepository @Inject constructor(
 
     // Check title already exist
     fun checkTitle(title: String) = dao.checkTitle(title)
+
+    // Get events where not invited or creator
+    fun getEventsWhereNotInvitedOrCreator(profilId: Int) = dao.getEventsWhereNotInvitedOrCreator(profilId)
 }

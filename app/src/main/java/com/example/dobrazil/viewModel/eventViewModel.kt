@@ -30,8 +30,8 @@ class eventViewModel @Inject public constructor(
     /**
      * @brief Get Event by id
      */
-    fun getById(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun getById(id: Int): EventEntity {
+        return withContext(Dispatchers.IO) {
             repository.getById(id)
         }
     }
@@ -78,6 +78,15 @@ class eventViewModel @Inject public constructor(
     suspend fun checkTitle(title: String): Boolean {
         return withContext(Dispatchers.IO) {
             repository.checkTitle(title) != null
+        }
+    }
+
+    /**
+     * @brief Get events where not invited or creator
+     */
+    suspend fun getEventsWhereNotInvitedOrCreator(profilId: Int): List<EventEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.getEventsWhereNotInvitedOrCreator(profilId)
         }
     }
 }
