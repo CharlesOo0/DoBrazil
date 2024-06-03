@@ -46,20 +46,25 @@ interface FavoriteDao {
     fun insertWithUsernames(followerUsername: String, followUsername: String) {
         val idFollower = getIdByUsername(followerUsername)
         val idFollow = getIdByUsername(followUsername)
-        insert(FavoriteRel(null, idFollower, idFollow))
+        val existingRelation = getByFollowerAndFollow(idFollower, idFollow)
+        if (existingRelation == null) {
+            insert(FavoriteRel(null, idFollower, idFollow))
+        }
     }
 
     // Get a favorite relation by its follower and follow
     @Query("SELECT * FROM FavoriteRel WHERE idFollower = :idFollower AND idFollow = :idFollow")
-    fun getByFollowerAndFollow(idFollower: Int, idFollow: Int): FavoriteRel
+    fun getByFollowerAndFollow(idFollower: Int, idFollow: Int): FavoriteRel?
 
     // Delete a favorite relation using usernames of follower and follow
     @Transaction
     fun deleteWithUsernames(followerUsername: String, followUsername: String) {
         val idFollower = getIdByUsername(followerUsername)
         val idFollow = getIdByUsername(followUsername)
-        val favoriteRel = getByFollowerAndFollow(idFollower, idFollow)
-        delete(favoriteRel)
+        val existingRelation = getByFollowerAndFollow(idFollower, idFollow)
+        if (existingRelation != null) {
+            delete(existingRelation)
+        }
     }
     
 }

@@ -28,20 +28,26 @@ class FavoriteRelRepository @Inject constructor(
     // Get a favorite relation by its follow
     fun getByFollow(id: Int) = dao.getByFollow(id)
 
+    // Get a favorite relation by its follower and follow
+    fun getByFollowerAndFollow(idFollower: Int, idFollow: Int) = dao.getByFollowerAndFollow(idFollower, idFollow)
+
     // Insert a favorite relation using usernames of follower and follow
     suspend fun insertWithUsernames(followerUsername: String, followUsername: String) {
         val idFollower = dao.getIdByUsername(followerUsername)
         val idFollow = dao.getIdByUsername(followUsername)
-        insert(FavoriteRel(null, idFollower, idFollow))
+        val existingRelation = dao.getByFollowerAndFollow(idFollower, idFollow)
+        if (existingRelation == null) {
+            insert(FavoriteRel(null, idFollower, idFollow))
+        }
     }
-
-    // Get a favorite relation by its follower and follow
-    fun getByFollowerAndFollow(idFollower: Int, idFollow: Int) = dao.getByFollowerAndFollow(idFollower, idFollow)
 
     // Delete a favorite relation using usernames of follower and follow
     suspend fun deleteWithUsernames(followerUsername: String, followUsername: String) {
         val idFollower = dao.getIdByUsername(followerUsername)
         val idFollow = dao.getIdByUsername(followUsername)
-        delete(FavoriteRel(null, idFollower, idFollow))
+        val existingRelation = dao.getByFollowerAndFollow(idFollower, idFollow)
+        if (existingRelation != null) {
+            delete(existingRelation)
+        }
     }
 }

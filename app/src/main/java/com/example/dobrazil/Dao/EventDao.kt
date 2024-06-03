@@ -32,4 +32,12 @@ interface EventDao {
     // Get an event by its id
     @Query("SELECT * FROM EventEntity WHERE idEvent = :id")
     fun getById(id: Int): EventEntity
+
+    // Get by title
+    @Query("SELECT * FROM EventEntity WHERE title = :title")
+    fun getByTitle(title: String): EventEntity
+
+    // Check title already exist
+    @Query("SELECT * FROM EventEntity WHERE title = :title")
+    fun checkTitle(title: String): EventEntity?
 }

@@ -29,6 +29,8 @@ import androidx.navigation.NavController
 import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.eventInvitedViewModel
+import com.example.dobrazil.viewModel.eventViewModel
 import com.example.dobrazil.viewModel.favoriteViewModel
 import com.example.dobrazil.viewModel.profilViewModel
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +50,8 @@ fun SearchFriend(
     mode : Int = 0,
     profilViewModel: profilViewModel,
     favoriteViewModel: favoriteViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
+    eventViewModel: eventViewModel,
     localStorage: LocalStorage,
     navController: NavController? = null) {
     Column ( // Column that contains the screen
@@ -118,7 +122,7 @@ fun SearchFriend(
         ) {
             for (profil in listSearch.value) { // For each profil in the list
                 Log.d("Profil", profil.username)
-                Contact(localStorage.username, profil.username, profil.avatarLink, 0, favoriteViewModel = favoriteViewModel) // Display the contact
+                Contact(localStorage.username, profil.username, profil.avatarLink, 0, favoriteViewModel = favoriteViewModel, eventInvitedViewModel = eventInvitedViewModel, eventViewModel = eventViewModel) // Display the contact
             }
         }
     }
@@ -131,6 +135,6 @@ fun SearchFriend(
 @Composable
 fun SearchFriendPreview() {
     DoBrazilTheme {
-        SearchFriend(profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), localStorage = LocalStorage())
+        SearchFriend(profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), eventViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }

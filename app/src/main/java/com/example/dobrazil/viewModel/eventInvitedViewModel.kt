@@ -61,4 +61,40 @@ class eventInvitedViewModel @Inject public constructor(
             repository.update(event)
         }
     }
+
+    /**
+     * @brief Get EventInvited by event and profile
+     */
+    fun getByEventAndProfile(eventId: Int, profilId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getByEventAndProfile(eventId, profilId)
+        }
+    }
+
+    /**
+     * @brief Get profil id by username
+     */
+    fun getIdByUsername(username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getIdByUsername(username)
+        }
+    }
+
+    /**
+     * @brief Insert EventInvited using usernames of event and profile
+     */
+    fun insertWithUsernames(eventId: Int, profileUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertWithUsernames(eventId, profileUsername)
+        }
+    }
+
+    /**
+     * @brief Delete EventInvited using usernames of event and profile
+     */
+    fun deleteWithUsernames(eventId: Int, profileUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWithUsernames(eventId, profileUsername)
+        }
+    }
 }

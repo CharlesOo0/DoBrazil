@@ -7,6 +7,7 @@ import com.example.dobrazil.EntityRepositories.EventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -59,6 +60,24 @@ class eventViewModel @Inject public constructor(
     fun update(event: EventEntity){
         viewModelScope.launch(Dispatchers.IO) {
             repository.update(event)
+        }
+    }
+
+    /**
+     * @brief Get Event by title
+     */
+    suspend fun getByTitle(title: String): EventEntity {
+        return withContext(Dispatchers.IO) {
+            repository.getByTitle(title)
+        }
+    }
+
+    /**
+     * @brief Check title already exist
+     */
+    suspend fun checkTitle(title: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            repository.checkTitle(title) != null
         }
     }
 }

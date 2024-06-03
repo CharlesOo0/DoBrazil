@@ -41,7 +41,10 @@ import com.example.appwithroomuv.R
  * @brief ManageEvent composable that modelise the ManageEvent screen
  */
 @Composable
-fun ManageEvent(navController: NavController? = null) {
+fun ManageEvent(
+    navController: NavController? = null,
+    eventTitle : String = ""
+) {
     Column ( // Column that contains the screen
         modifier = Modifier
             .fillMaxSize()
@@ -227,7 +230,7 @@ fun AddPeople() {
             .padding(8.dp)
     ) {
         for (i in 0..10) {
-            Contact(mode = 1, favoriteViewModel = hiltViewModel())
+            Contact(mode = 1, favoriteViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), eventViewModel = hiltViewModel())
             Spacer(modifier = Modifier.size(4.dp))
         }
     }
@@ -246,7 +249,7 @@ fun DeletePeople() {
             .padding(8.dp)
     ) {
         for (i in 0..10) {
-            Contact(mode = 2, favoriteViewModel = hiltViewModel())
+            Contact(mode = 2, favoriteViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), eventViewModel = hiltViewModel())
             Spacer(modifier = Modifier.size(4.dp))
         }
     }

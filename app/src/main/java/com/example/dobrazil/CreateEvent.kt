@@ -1,6 +1,7 @@
 package com.example.dobrazil
 
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -112,6 +113,14 @@ fun verifyCreateEvent(
     }
 
     eventViewModel.viewModelScope.launch(Dispatchers.Main) { // Launch a coroutine
+
+        val checkTitle = async { eventViewModel.checkTitle(title) } // Check if the title already exist
+
+        if (checkTitle.await()) { // If the title already exist
+            error.value = "The title already exist" // Error message
+            return@launch
+        }
+
         val profil : ProfilEntity? = profilViewModel.getByUsername(localStorage.username) // Get the profil
         var idHost = 0
 
@@ -127,13 +136,24 @@ fun verifyCreateEvent(
                 if (localStorage.idUser != null) {
                     // Get the favorite list
                     val favoriteList : List<FavoriteRel> = favoriteViewModel.getByFollower(localStorage.idUser!!) // Get the favorite list
+                    val eventGet : EventEntity = async {eventViewModel.getByTitle(title)}.await() // Get the event
 
                     for (favorite in favoriteList) { // For each favorite
-                        val eventInvitedCrossRef = EventInvitedCrossRef(event.idEvent!!, favorite.idFollow)
-                        eventInvitedViewModel.insert(eventInvitedCrossRef) // Invite the favorite person
+                        Log.d("Favorite", favorite.idFollow.toString())
+                    }
+                    for (favorite in favoriteList) { // For each favorite
+                        val eventId = eventGet.idEvent
+                        if (eventId != null) {
+                            val eventInvitedCrossRef = EventInvitedCrossRef(eventId, favorite.idFollow)
+                            eventInvitedViewModel.insert(eventInvitedCrossRef) // Invite the favorite person
+                        }
                     }
                 }
             }
+        }
+
+        withContext(Dispatchers.Main) {
+            navController?.navigate("ChoseInvitedScreen/$title") // Go to the next screen
         }
     }
 }

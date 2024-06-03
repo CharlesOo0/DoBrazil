@@ -24,4 +24,10 @@ class EventRepository @Inject constructor(
 
     // Get all events by status
     fun getById(id : Int) = dao.getById(id)
+
+    // Get by title
+    fun getByTitle(title: String) = dao.getByTitle(title)
+
+    // Check title already exist
+    fun checkTitle(title: String) = dao.checkTitle(title)
 }

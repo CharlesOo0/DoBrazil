@@ -1,5 +1,6 @@
 package com.example.dobrazil
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,12 +51,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
 import com.example.dobrazil.Entity.FavoriteRel
+import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.eventInvitedViewModel
+import com.example.dobrazil.viewModel.eventViewModel
 import com.example.dobrazil.viewModel.favoriteViewModel
 import com.example.dobrazil.viewModel.profilViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /**
@@ -62,13 +68,18 @@ import kotlinx.coroutines.launch
  * @param profilViewModel profilViewModel that contains the profilViewModel
  * @param favoriteViewModel favoriteViewModel that contains the favoriteViewModel
  * @param navController NavController that contains the NavController
+ * @param localStorage LocalStorage that contains the LocalStorage
+ * @param eventTitle String that contains the eventTitle
  */
 @Composable
 fun ChoseInvited(
     profilViewModel: profilViewModel,
     favoriteViewModel: favoriteViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
+    eventViewModel: eventViewModel,
     navController: NavController? = null,
-    localStorage: LocalStorage
+    localStorage: LocalStorage,
+    eventTitle : String = ""
 ) {
     Column ( // Column that contains the screen
         modifier = Modifier
@@ -102,7 +113,7 @@ fun ChoseInvited(
                         contentDescription = "Back",
                         modifier = Modifier
                             .size(45.dp)
-                            .clickable(onClick = { navController?.popBackStack() }) // Make the icon clickable
+                            .clickable(onClick = { navController?.navigate("HomeScreen") }) // Make the icon clickable
                             .padding(8.dp)
                     )
 
@@ -118,8 +129,7 @@ fun ChoseInvited(
                         contentDescription = "Front",
                         modifier = Modifier
                             .size(45.dp)
-                            .clickable(onClick = { navController?.navigate("ManageEventScreen") }) // Make the icon clickable
-                            /* TODO Make it go to the correct Event */
+                            .clickable(onClick = { navController?.navigate("ManageEventScreen/$eventTitle") }) // Make the icon clickable
                             .padding(8.dp)
                     )
 
@@ -131,11 +141,24 @@ fun ChoseInvited(
                 ) // Border between top bar and form
 
                 val search = remember { mutableStateOf("") } // Search value
+                var listSearch : MutableState<List<ProfilEntity>> = remember { mutableStateOf(listOf()) } // List of profil
+
 
                 // Search bar
                 SearchBar(
                     value = search.value, // Connect the search state to the SearchBar
-                    onValueChange = { search.value = it }, // Update the search state when the value changes
+                    onValueChange = {
+                        search.value = it
+                    }, // Update the search state when the value changes
+                    onSearchExecute = {
+                        profilViewModel.viewModelScope.launch(Dispatchers.Main) { // Launch a coroutine
+
+                            if (search.value != "") { // If the search value is not empty
+                                listSearch.value = async { profilViewModel.searchNotFriendProfil(search.value, localStorage.idUser!!) }.await()
+                            }
+
+                        }
+                    },
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(),
@@ -151,8 +174,10 @@ fun ChoseInvited(
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                 ) {
-                    // TODO Query the search value to get the contacts and print them
-                    Contact(mode = 1, favoriteViewModel = hiltViewModel())
+                    for (profil in listSearch.value) { // For each profil in the list
+                        Log.d("Profil", profil.username)
+                        Contact(localStorage.username, profil.username, profil.avatarLink, 1, favoriteViewModel = favoriteViewModel, eventInvitedViewModel = eventInvitedViewModel, eventViewModel = eventViewModel, eventTitle = eventTitle) // Display the contact
+                    }
                 }
             }
         }
@@ -198,6 +223,9 @@ fun SearchBar(
  * @param name: String that contains the name of the contact
  * @param avatar: String that contains the avatar of the contact
  * @param mode: Int if its 0 its the invite mode, if its 1 its the add mode, if its 2 its the delete mode
+ * @param favoriteViewModel: favoriteViewModel that contains the favoriteViewModel
+ * @param eventInvitedViewModel: eventInvitedViewModel that contains the eventInvitedViewModel
+ * @param eventTitle: String that contains the eventTitle
  */
 @Composable
 fun Contact(
@@ -205,7 +233,10 @@ fun Contact(
     name: String = "",
     avatar: String? = "",
     mode: Int = 0,
-    favoriteViewModel: favoriteViewModel
+    favoriteViewModel: favoriteViewModel,
+    eventInvitedViewModel: eventInvitedViewModel,
+    eventViewModel: eventViewModel,
+    eventTitle: String = ""
 ) {
     var invited = remember { mutableStateOf(false) } // State of the invitation
 
@@ -251,11 +282,23 @@ fun Contact(
                 BooleanInputField(switchState = invited) // Switch to invite the people
                 if (invited.value) {
                     LaunchedEffect(Dispatchers.Main) {
-                        favoriteViewModel.insertWithUsernames(nameCaller, name) // Insert the contact in the favorite list
+                        val idEvent = async {eventViewModel.getByTitle(eventTitle).idEvent}.await()
+                        if (idEvent != null) {
+                            eventInvitedViewModel.insertWithUsernames(
+                                idEvent,
+                                name
+                            ) // Insert the contact in the favorite list
+                        }
                     }
                 }else {
                     LaunchedEffect(Dispatchers.Main) {
-                        favoriteViewModel.deleteWithUsernames(nameCaller, name) // Insert the contact in the favorite list
+                        val idEvent = async {eventViewModel.getByTitle(eventTitle).idEvent}.await()
+                        if (idEvent != null) {
+                            eventInvitedViewModel.deleteWithUsernames(
+                                idEvent,
+                                name
+                            ) // Insert the contact in the favorite list
+                        }
                     }
                 }
             }
@@ -284,6 +327,6 @@ fun Contact(
 @Composable
 fun ChoseInvitedPreview() {
     DoBrazilTheme {
-        ChoseInvited(profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), localStorage = LocalStorage())
+        ChoseInvited(profilViewModel = hiltViewModel(), favoriteViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), eventViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }

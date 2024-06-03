@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.dobrazil.Entity.ProfilEntity
 import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
@@ -39,20 +41,24 @@ fun Dashboard(
         composable("HomeScreen") {
             Home(navController = navController)
         }
-        composable("CreateEventScreen") {
+        composable("CreateEventScreen") {// Fini
             CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, favoriteViewModel, eventInvitedViewModel, localStorage)
         }
-        composable("ChoseInvitedScreen") {
-            ChoseInvited(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, localStorage = localStorage)
+        composable("ChoseInvitedScreen/{eventTitle}", // Fini
+            arguments = listOf(navArgument("eventTitle") { type = NavType.StringType })
+        ) {backstackEntry ->
+            ChoseInvited(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, eventInvitedViewModel = eventInvitedViewModel, eventViewModel = eventViewModel, localStorage = localStorage, eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: "")
         }
-        composable("ManageEventScreen") {
-            ManageEvent(navController = navController)
+        composable("ManageEventScreen/{eventTitle}",
+            arguments = listOf(navArgument("eventTitle") { type = NavType.StringType })
+        ) {backstackEntry ->
+            ManageEvent(navController = navController, eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: "")
         }
         composable("BudgetScreen") {
             Budget(navController = navController)
         }
         composable("SearchFriendScreen") { // Fini
-            SearchFriend(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, localStorage = localStorage)
+            SearchFriend(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, eventInvitedViewModel = eventInvitedViewModel, eventViewModel = eventViewModel, localStorage = localStorage)
         }
         composable("ProfilScreen") {
             Profil(navController = navController, profilViewModel = profiViewModel, localStorage)

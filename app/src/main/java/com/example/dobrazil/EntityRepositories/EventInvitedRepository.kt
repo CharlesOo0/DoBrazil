@@ -24,4 +24,16 @@ class EventInvitedRepository @Inject constructor(
 
     // Get all events by status
     fun getById(id : Int) = dao.getById(id)
+
+    // Get an event-invited cross reference by its event and profile
+    fun getByEventAndProfile(eventId: Int, profilId: Int) = dao.getByEventAndProfile(eventId, profilId)
+
+    // Get a profil id by its username
+    fun getIdByUsername(username: String) = dao.getIdByUsername(username)
+
+    // Insert an event-invited cross reference using usernames of event and profile
+    suspend fun insertWithUsernames(eventId: Int, profileUsername: String) = dao.insertWithUsernames(eventId, profileUsername)
+
+    // Delete an event-invited cross reference using usernames of event and profile
+    suspend fun deleteWithUsernames(eventId: Int, profileUsername: String) = dao.deleteWithUsernames(eventId, profileUsername)
 }
