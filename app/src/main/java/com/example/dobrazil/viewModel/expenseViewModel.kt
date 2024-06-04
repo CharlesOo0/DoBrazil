@@ -7,6 +7,7 @@ import com.example.dobrazil.EntityRepositories.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -68,6 +69,15 @@ class expenseViewModel @Inject public constructor(
     fun deleteAllExpenseTargetEventProfil(idProfil: Int, idEvent: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllExpenseTargetEventProfil(idProfil, idEvent)
+        }
+    }
+
+    /**
+     * @brief Get all Expense of a specific event
+     */
+    suspend fun getAllExpenseTargetEvent(idEvent: Int): List<ExpenseEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.getAllExpenseTargetEvent(idEvent)
         }
     }
 }

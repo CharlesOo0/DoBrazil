@@ -27,4 +27,7 @@ class ExpenseRepository @Inject constructor(
 
     // Delete all expenses of a specific event and profil
     suspend fun deleteAllExpenseTargetEventProfil(idProfil: Int, idEvent: Int) = dao.deleteAllExpenseTargetEventProfil(idProfil, idEvent)
+
+    // Get all expenses of a specific event
+    fun getAllExpenseTargetEvent(idEvent: Int) = dao.getAllExpenseTargetEvent(idEvent)
 }

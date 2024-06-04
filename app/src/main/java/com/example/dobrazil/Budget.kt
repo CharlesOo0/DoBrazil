@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -43,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
 import com.example.dobrazil.Entity.ExpenseEntity
@@ -57,6 +59,7 @@ import com.example.dobrazil.viewModel.favoriteViewModel
 import com.example.dobrazil.viewModel.profilViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -152,21 +155,48 @@ fun Budget(
         }
 
         /*------------------------------- Content -------------------------------*/ // TODO
+        var expensesMutable = remember { mutableStateOf(listOf<ExpenseEntity>()) }
+
 
         LaunchedEffect(Dispatchers.Main) {
+            val event = async {eventViewModel.getByTitle(eventTitle)}.await()
+            val expenses = async {expenseViewModel.getAllExpenseTargetEvent(event.idEvent!!)}.await()
 
+            withContext(Dispatchers.Main) {
+                expensesMutable.value = expenses
+            }
+        }
+
+        for (expense in expensesMutable.value) {
+            Log.d("Expense", expense.toString())
         }
 
         if (page.value == 0) { // Show the history of finance
-            Finance()
-            LazyColumn {
-                items(10) {
-                    Finance()
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) { // Lazy column for the list of finance
+                items(expensesMutable.value) { expense ->
+                    Finance(expense)
                     Spacer(modifier = Modifier.padding(8.dp))
                 }
             }
         } else { // Show the balance between people
-            Balance()
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+
+            ){
+                items(calculateBalances(expensesMutable.value, profilViewModel).toList()) { (key, value) ->
+                    Balance(
+                        name = key,
+                        balance = value
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                }
+            }
         }
 
         CreateExpense( // Create an expense
@@ -178,6 +208,41 @@ fun Budget(
         )
 
     }
+}
+
+/**
+ * @brief Calculate the balance between people
+ * @param expenses : List<ExpenseEntity>, the list of expenses
+ * @param profilViewModel : profilViewModel, the view model of the profil
+ */
+fun calculateBalances(
+    expenses: List<ExpenseEntity>,
+    profilViewModel: profilViewModel
+): Map<String, Float> {
+    val balances = mutableMapOf<String, Float>() // Create a map of balance
+
+    for (expense in expenses) { // For each expense
+        var payerName: String = "" // Name of the payer
+        var financerName: String = "" // Name of the financer
+
+        profilViewModel.viewModelScope.launch(Dispatchers.Main) {  // Launch the coroutine
+            val payerE = async { profilViewModel.getById(expense.idPayer)}.await() // Get the payer
+            val financerE = async { profilViewModel.getById(expense.idFinancer)}.await() // Get the financer
+
+            withContext(Dispatchers.Main) { // Change the context
+                payerName = payerE.username // Set the payer name
+                financerName = financerE.username  // Set the financer name
+            }
+        }
+
+        // Subtract the expense amount from the payer's balance
+        balances[payerName] = balances.getOrDefault(payerName, 0f) - expense.amount
+
+        // Add the expense amount to the financer's balance
+        balances[financerName] = balances.getOrDefault(financerName, 0f) + expense.amount
+    }
+
+    return balances
 }
 
 /**
@@ -200,15 +265,9 @@ fun CreateExpense(
     var listInvitedMutable = remember { mutableStateOf(listOf<ProfilEntity>()) }
     var idEventMutable = remember { mutableStateOf(0) }
 
-    Log.d("Eventid", eventTitle.toString())
-
     LaunchedEffect(Dispatchers.Main) { // Launch the effect
         val idEvent = async {eventViewModel.getByTitle(eventTitle)}.await().idEvent!! // Get the id of the event
         val listInvited = async {profilViewModel.getInvitedProfil(idEvent)}.await() // Get the list of invited people
-
-        for (i in listInvited) { // For each invited people
-            Log.d("Invited", i.username)
-        }
 
         withContext(Dispatchers.Main) { // Change the context
             listInvitedMutable.value = listInvited // Set the value of the list of invited people
@@ -216,10 +275,6 @@ fun CreateExpense(
         }
     }
 
-    Log.d("Invited", "List of invited people")
-    for (i in listInvitedMutable.value) { // For each invited people
-        Log.d("InvitedMutable", i.username)
-    }
     if (listInvitedMutable.value.isEmpty()) { // If the list of invited people is empty
         return
     }
@@ -339,7 +394,9 @@ fun SelectChoice(
  * @param financeId : Int, the id of the finance
  */
 @Composable
-fun Finance(financeId: Int = 0) {
+fun Finance(
+    expense : ExpenseEntity
+) {
     Row (
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -352,19 +409,19 @@ fun Finance(financeId: Int = 0) {
     ) {
 
         Text(
-            text = "Titre",
+            text = expense.title,
             color = Color.Black,
             modifier = Modifier.padding(8.dp)
         )
 
         Text(
-            text = "XX Montant",
+            text = expense.amount.toString() + "€",
             color = Color.Black,
             modifier = Modifier.padding(8.dp)
         )
 
         Text(
-            text = "XX Date",
+            text = expense.date,
             color = Color.Black,
             modifier = Modifier.padding(8.dp)
         )
@@ -374,10 +431,14 @@ fun Finance(financeId: Int = 0) {
 
 /**
  * @brief Composable balance
- * @param personneId : Int, the id of the balance
+ * @param name : String, the name of the person
+ * @param balance : Float, the balance of the person
  */
 @Composable
-fun Balance(personneId: Int = 0) {
+fun Balance(
+    name: String,
+    balance: Float
+) {
     Row (
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -389,9 +450,7 @@ fun Balance(personneId: Int = 0) {
 
     ) {
 
-        var balance = remember { mutableStateOf(0) }
-
-        if (balance.value > 0) { // If the balance is negative
+        if (balance > 0) { // If the balance is negative
             Row (
                 horizontalArrangement = Arrangement.SpaceBetween, // Space the element evenly
                 modifier = Modifier
@@ -403,7 +462,7 @@ fun Balance(personneId: Int = 0) {
             ){
 
                 Text( // Text of the balance
-                    text = "Person -" + balance.value.toString() + "€",
+                    text = name + " " + balance.toString() + "€",
                     color = Color.Red,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -420,7 +479,7 @@ fun Balance(personneId: Int = 0) {
                 Spacer(modifier = Modifier.padding(1.dp)) // Space between the text
 
                 Text( // Text of the balance
-                    text = "Personne +" + balance.value.toString() + "€",
+                    text = name + " " + balance.toString() + "€",
                     color = Color.Green,
                     modifier = Modifier.padding(8.dp)
                 )

@@ -30,8 +30,8 @@ class profilViewModel @Inject public constructor(
     /**
      * @brief Get Profil by id
      */
-    fun getById(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun getById(id: Int): ProfilEntity {
+        return withContext(Dispatchers.IO) {
             repository.getById(id)
         }
     }
