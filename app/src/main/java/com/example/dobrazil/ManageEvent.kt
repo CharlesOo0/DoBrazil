@@ -97,8 +97,8 @@ fun ManageEvent(
             CategorieButton(onClick = {page.value = 2}, R.drawable.categorie_delete, Modifier.weight(1f))
 
             // Button to show the your favorite people
-            CategorieButton(onClick = {navController?.navigate("BudgetScreen")}, R.drawable.categorie_budget, Modifier.weight(1f))
-            /* TODO Make it navigate to the correct budget screen */
+            CategorieButton(onClick = {navController?.navigate("BudgetScreen/${eventTitle}")}, R.drawable.categorie_budget, Modifier.weight(1f))
+
             // they are all weighted to take the same space
         }
 
@@ -206,9 +206,9 @@ fun EventInformation(
         var peopleInvitedMutable = remember { mutableStateOf(listOf<ProfilEntity>()) } // People that are invited
 
         LaunchedEffect(Dispatchers.Main) { // Get the event
-            val event = eventViewModel.getByTitle(eventTitle) // Get the event by its title
+            val event = async {eventViewModel.getByTitle(eventTitle)}.await() // Get the event by its title
             val nbPers = eventInvitedViewModel.getNumberOfPersonGoing(event.idEvent!!) // Get the number of people that are invited
-            val peopleInvited = profilViewModel.getInvitedProfil(event.idEvent) // Get the people that are invited
+            val peopleInvited = async { profilViewModel.getInvitedProfil(event.idEvent)}.await() // Get the people that are invited
 
             withContext(Dispatchers.Main) { // Switch to the main thread
                 eventMutable.value = event // Set the event
@@ -288,8 +288,10 @@ fun EventInformation(
                 People(
                     peopleEntity = person,
                     favoriteViewModel = favoriteViewModel,
-                    localStorage = localStorage
+                    localStorage = localStorage,
+                    mode = 9999
                 )
+                Spacer(modifier = Modifier.size(4.dp))
             }
         }
     }

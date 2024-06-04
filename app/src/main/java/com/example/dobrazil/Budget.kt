@@ -1,5 +1,6 @@
 package com.example.dobrazil
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,12 +16,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,21 +42,44 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
+import com.example.dobrazil.Entity.ExpenseEntity
+import com.example.dobrazil.Entity.ProfilEntity
+import com.example.dobrazil.data.LocalStorage
 import com.example.dobrazil.ui.theme.DoBrazilTheme
+import com.example.dobrazil.viewModel.eventFinanciersViewModel
+import com.example.dobrazil.viewModel.eventInvitedViewModel
+import com.example.dobrazil.viewModel.eventViewModel
+import com.example.dobrazil.viewModel.expenseViewModel
+import com.example.dobrazil.viewModel.favoriteViewModel
+import com.example.dobrazil.viewModel.profilViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 /**
  * @brief Budget composable that modelise the Budget screen
  */
 @Composable
-fun Budget(navController: NavController? = null) {
+fun Budget(
+    eventInvitedViewModel: eventInvitedViewModel,
+    eventFinanciersViewModel: eventFinanciersViewModel,
+    eventViewModel: eventViewModel,
+    profilViewModel: profilViewModel,
+    expenseViewModel: expenseViewModel,
+    navController: NavController? = null,
+    localStorage: LocalStorage,
+    eventTitle: String = ""
+) {
     Column (
         modifier = Modifier
             .fillMaxSize()
             .background(Color(IvoryColor)),
     ) {
         var page = remember { mutableStateOf(0) }
+        var openDialog = remember { mutableStateOf(false) }
 
         Box(
             modifier = Modifier
@@ -85,6 +118,17 @@ fun Budget(navController: NavController? = null) {
                             .padding(8.dp)
                     ) // Title
 
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Add",
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clickable(onClick = {
+                                openDialog.value = !openDialog.value
+                            }) // Make the icon clickable
+                            .padding(8.dp)
+                    )
+
                 }
 
                 BottomBorder(width = 3.dp, color = Color(IvoryBorderColor).copy(alpha = Opacity))// Border between top bar and form
@@ -107,16 +151,186 @@ fun Budget(navController: NavController? = null) {
             }
         }
 
-        /*------------------------------- Content -------------------------------*/
+        /*------------------------------- Content -------------------------------*/ // TODO
+
+        LaunchedEffect(Dispatchers.Main) {
+
+        }
 
         if (page.value == 0) { // Show the history of finance
-            /* TODO query to get finance history */
             Finance()
+            LazyColumn {
+                items(10) {
+                    Finance()
+                    Spacer(modifier = Modifier.padding(8.dp))
+                }
+            }
         } else { // Show the balance between people
-            /* TODO query to get balance between people */
             Balance()
         }
 
+        CreateExpense( // Create an expense
+            openDialog = openDialog,
+            profilViewModel = profilViewModel,
+            eventViewModel = eventViewModel,
+            expenseViewModel = expenseViewModel,
+            eventTitle = eventTitle
+        )
+
+    }
+}
+
+/**
+ * @brief Composable that allow to create an expense
+ */
+@Composable
+fun CreateExpense(
+    openDialog: MutableState<Boolean>,
+    eventViewModel: eventViewModel,
+    profilViewModel: profilViewModel,
+    expenseViewModel: expenseViewModel,
+    eventTitle: String
+) {
+    var expenseTitle = remember { mutableStateOf("") }
+    var expenseAmount = remember { mutableStateOf("") }
+    var expenseDate = remember { mutableStateOf("") }
+    var indexPayer = remember { mutableStateOf(0) }
+    var indexFinancer = remember { mutableStateOf(0) }
+
+    var listInvitedMutable = remember { mutableStateOf(listOf<ProfilEntity>()) }
+    var idEventMutable = remember { mutableStateOf(0) }
+
+    Log.d("Eventid", eventTitle.toString())
+
+    LaunchedEffect(Dispatchers.Main) { // Launch the effect
+        val idEvent = async {eventViewModel.getByTitle(eventTitle)}.await().idEvent!! // Get the id of the event
+        val listInvited = async {profilViewModel.getInvitedProfil(idEvent)}.await() // Get the list of invited people
+
+        for (i in listInvited) { // For each invited people
+            Log.d("Invited", i.username)
+        }
+
+        withContext(Dispatchers.Main) { // Change the context
+            listInvitedMutable.value = listInvited // Set the value of the list of invited people
+            idEventMutable.value = idEvent // Set the value of the id of the event
+        }
+    }
+
+    Log.d("Invited", "List of invited people")
+    for (i in listInvitedMutable.value) { // For each invited people
+        Log.d("InvitedMutable", i.username)
+    }
+    if (listInvitedMutable.value.isEmpty()) { // If the list of invited people is empty
+        return
+    }
+
+    if (openDialog.value) { // If the dialog is open
+        AlertDialog( // Create an alert dialog
+            onDismissRequest = { // When the dialog is dismissed
+                openDialog.value = false
+            },
+            title = { // Title of the dialog
+                Text(text = "Create an expense")
+            },
+            text = { // Text of the dialog
+                Column (
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(8.dp)
+                ){
+                    CustomInputField( // Custom input field for the title
+                        label = "Title",
+                        textState = expenseTitle
+                    )
+
+                    CustomInputField( // Custom input field for the amount
+                        label = "Amount",
+                        textState = expenseAmount
+                    )
+
+                    CustomInputField( // Custom input field for the date
+                        label = "Date",
+                        textState = expenseDate
+                    )
+
+                    Row {
+                        Text("Payer", modifier = Modifier.padding(8.dp))
+                        SelectChoice( // Select choice for the person that payed
+                            items = listInvitedMutable.value,
+                            selectedIndex = indexPayer
+                        )
+                    }
+
+                    Row {
+                        Text("Financer", modifier = Modifier.padding(8.dp))
+                        SelectChoice( // Select choice for the person that need to finance it
+                            items = listInvitedMutable.value,
+                            selectedIndex = indexFinancer
+                        )
+                    }
+                }
+            },
+            confirmButton = { // Confirm button
+                Button(
+                    onClick = { // When the button is clicked
+                        // Verify that no field are null
+                        if (expenseTitle.value == "" || expenseAmount.value == "" || expenseDate.value == "") {
+                            return@Button
+                        } else { // If all the fields are filled
+                            val expenseEntity: ExpenseEntity =
+                                ExpenseEntity( // Create an expense entity
+                                    idExpense = null,
+                                    title = expenseTitle.value,
+                                    amount = expenseAmount.value.toFloat(),
+                                    date = expenseDate.value,
+                                    idPayer = listInvitedMutable.value[indexPayer.value].idProfil!!,
+                                    idFinancer = listInvitedMutable.value[indexFinancer.value].idProfil!!,
+                                    idEvent = idEventMutable.value
+                                )
+                            expenseViewModel.insert(expenseEntity) // Insert the expense
+                            openDialog.value = false // Close the dialog
+                        }
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = { // Dismiss button
+                Button(
+                    onClick = { // When the button is clicked
+                        openDialog.value = false // Close the dialog
+                    }
+                ) {
+                    Text("Dismiss")
+                }
+            }
+        )
+    }
+}
+
+/**
+ * @brief Composable for a select choice
+ */
+@Composable
+fun SelectChoice(
+    items: List<ProfilEntity>,
+    selectedIndex: MutableState<Int>
+) {
+    var expanded = remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.wrapContentSize()) {
+        Text(items[selectedIndex.value].username, modifier = Modifier.clickable(onClick = { expanded.value = true }))
+        DropdownMenu(expanded = expanded.value, onDismissRequest = { expanded.value = false }) {
+            items.forEachIndexed { index, s ->
+                DropdownMenuItem(
+                    text = { Text(s.username) },
+                    onClick = {
+                    selectedIndex.value = index
+                    expanded.value = false
+                })
+            }
+        }
     }
 }
 
@@ -223,6 +437,6 @@ fun Balance(personneId: Int = 0) {
 @Composable
 fun BudgetPreview() {
     DoBrazilTheme {
-        Budget()
+        Budget(profilViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), eventFinanciersViewModel = hiltViewModel(), expenseViewModel = hiltViewModel(), eventViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }

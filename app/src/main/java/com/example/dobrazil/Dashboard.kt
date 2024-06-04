@@ -90,9 +90,18 @@ fun Dashboard(
                 eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: ""
             )
         }
-        composable("BudgetScreen") {
+        composable("BudgetScreen/{eventTitle}",
+            arguments = listOf(navArgument("eventTitle") { type = NavType.StringType })
+        ) {backstackEntry ->
             Budget(
-                navController = navController
+                eventInvitedViewModel = eventInvitedViewModel,
+                profilViewModel = profiViewModel,
+                expenseViewModel = expenseViewModel,
+                eventFinanciersViewModel = eventFinanciersViewModel,
+                eventViewModel = eventViewModel,
+                navController = navController,
+                localStorage = localStorage,
+                eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: ""
             )
         }
         composable("SearchFriendScreen") { // Fini

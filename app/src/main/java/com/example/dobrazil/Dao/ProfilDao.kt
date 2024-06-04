@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
+import androidx.room.Transaction
 import com.example.dobrazil.Entity.ProfilEntity
 
 /**
@@ -58,15 +59,20 @@ interface ProfilDao {
     fun searchNotFriendProfil(search: String, idProfil: Int): List<ProfilEntity>
 
     // Search not invited profil do not take the idProfil
-    @Query("SELECT * FROM ProfilEntity WHERE username LIKE '%' || :search || '%' AND idProfil NOT IN (SELECT idProfil FROM EventInvitedCrossRef WHERE eventId = :idEvent) AND idProfil != :idProfil")
+    @Query("SELECT * FROM ProfilEntity WHERE username LIKE '%' || :search || '%' AND idProfil NOT IN (SELECT profilId FROM EventInvitedCrossRef WHERE eventId = :idEvent) AND idProfil != :idProfil")
     fun searchNotInvitedProfil(search: String, idProfil: Int, idEvent: Int): List<ProfilEntity>
 
     // Get friends profil
     @Query("SELECT * FROM ProfilEntity WHERE idProfil IN (SELECT idFollow FROM FavoriteRel WHERE idFollower = :idProfil)")
     fun getFriendsProfil(idProfil: Int): List<ProfilEntity>
 
-    // Get peoples invited to an event
-    @Query("SELECT * FROM ProfilEntity WHERE idProfil IN (SELECT idProfil FROM EventInvitedCrossRef WHERE eventId = :idEvent)")
+    @Query("""
+    SELECT ProfilEntity.* 
+    FROM ProfilEntity 
+    JOIN EventInvitedCrossRef 
+    ON ProfilEntity.idProfil = EventInvitedCrossRef.profilId 
+    WHERE EventInvitedCrossRef.eventId = :idEvent
+""")
     fun getInvitedProfil(idEvent: Int): List<ProfilEntity>
 
 }

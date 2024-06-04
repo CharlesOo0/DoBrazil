@@ -305,7 +305,8 @@ fun CategorieButton(onClick: () -> Unit, categorieIcon: Int, modifier: Modifier 
 fun People(
     peopleEntity: ProfilEntity,
     favoriteViewModel: favoriteViewModel,
-    localStorage: LocalStorage
+    localStorage: LocalStorage,
+    mode: Int = 0
 ) {
     Row ( // Row that contains the element of the people
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -334,16 +335,21 @@ fun People(
         Text(peopleEntity.username) // Name of the people
 
         Box {
-            Icon( // Delete button
-                Icons.Default.Delete,
-                contentDescription = "Delete",
-                modifier = Modifier
-                    .clickable(onClick = {
-                        favoriteViewModel.viewModelScope.launch(Dispatchers.Main) {
-                            favoriteViewModel.deleteWithUsernames(localStorage.username, peopleEntity.username) // Insert the contact in the favorite list
-                        }
-                    }) // Make the icon clickable
-            )
+            if (mode == 0) {
+                Icon( // Delete button
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    modifier = Modifier
+                        .clickable(onClick = {
+                            favoriteViewModel.viewModelScope.launch(Dispatchers.Main) {
+                                favoriteViewModel.deleteWithUsernames(
+                                    localStorage.username,
+                                    peopleEntity.username
+                                ) // Insert the contact in the favorite list
+                            }
+                        }) // Make the icon clickable
+                )
+            }
         }
 
     }
