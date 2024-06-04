@@ -151,61 +151,62 @@ fun Budget(
                     CategorieButton(onClick = {page.value = 1}, R.drawable.categorie_balance, Modifier.weight(1f))
 
                 }
-            }
-        }
 
-        /*------------------------------- Content -------------------------------*/ // TODO
-        var expensesMutable = remember { mutableStateOf(listOf<ExpenseEntity>()) }
+                /*------------------------------- Content -------------------------------*/
+                var expensesMutable = remember { mutableStateOf(listOf<ExpenseEntity>()) }
 
 
-        LaunchedEffect(Dispatchers.Main) {
-            val event = async {eventViewModel.getByTitle(eventTitle)}.await()
-            val expenses = async {expenseViewModel.getAllExpenseTargetEvent(event.idEvent!!)}.await()
+                LaunchedEffect(Dispatchers.Main) {
+                    val event = async {eventViewModel.getByTitle(eventTitle)}.await()
+                    val expenses = async {expenseViewModel.getAllExpenseTargetEvent(event.idEvent!!)}.await()
 
-            withContext(Dispatchers.Main) {
-                expensesMutable.value = expenses
-            }
-        }
-
-        for (expense in expensesMutable.value) {
-            Log.d("Expense", expense.toString())
-        }
-
-        if (page.value == 0) { // Show the history of finance
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) { // Lazy column for the list of finance
-                items(expensesMutable.value) { expense ->
-                    Finance(expense)
-                    Spacer(modifier = Modifier.padding(8.dp))
+                    withContext(Dispatchers.Main) {
+                        expensesMutable.value = expenses
+                    }
                 }
-            }
-        } else { // Show the balance between people
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
 
-            ){
-                items(calculateBalances(expensesMutable.value, profilViewModel).toList()) { (key, value) ->
-                    Balance(
-                        name = key,
-                        balance = value
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
+                for (expense in expensesMutable.value) {
+                    Log.d("Expense", expense.toString())
                 }
-            }
-        }
 
-        CreateExpense( // Create an expense
-            openDialog = openDialog,
-            profilViewModel = profilViewModel,
-            eventViewModel = eventViewModel,
-            expenseViewModel = expenseViewModel,
-            eventTitle = eventTitle
-        )
+                if (page.value == 0) { // Show the history of finance
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) { // Lazy column for the list of finance
+                        items(expensesMutable.value) { expense ->
+                            Finance(expense)
+                            Spacer(modifier = Modifier.padding(8.dp))
+                        }
+                    }
+                } else { // Show the balance between people
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+
+                    ){
+                        items(calculateBalances(expensesMutable.value, profilViewModel).toList()) { (key, value) ->
+                            Balance(
+                                name = key,
+                                balance = value
+                            )
+                            Spacer(modifier = Modifier.padding(8.dp))
+                        }
+                    }
+                }
+
+                CreateExpense( // Create an expense
+                    openDialog = openDialog,
+                    profilViewModel = profilViewModel,
+                    eventViewModel = eventViewModel,
+                    expenseViewModel = expenseViewModel,
+                    eventTitle = eventTitle
+                )
+            }
+
+        }
 
     }
 }
@@ -301,12 +302,13 @@ fun CreateExpense(
 
                     CustomInputField( // Custom input field for the amount
                         label = "Amount",
-                        textState = expenseAmount
+                        textState = expenseAmount,
+                        mode = 1
                     )
 
-                    CustomInputField( // Custom input field for the date
+                    CustomDatePicker( // Custom date picker
                         label = "Date",
-                        textState = expenseDate
+                        dateState = expenseDate
                     )
 
                     Row {

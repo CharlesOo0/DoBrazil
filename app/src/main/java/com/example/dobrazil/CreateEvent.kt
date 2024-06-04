@@ -73,6 +73,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.ParseException
+import java.util.Date
 
 /**
  * @brief Function that verify the information for creating Event
@@ -397,12 +399,27 @@ fun CustomDatePicker(dateState: MutableState<String> = mutableStateOf(""), text:
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomInputField(textState: MutableState<String>, label: String,  icon: (@Composable () -> Unit)? = null) {
+fun CustomInputField(
+    textState: MutableState<String>,
+    label: String,
+    icon: (@Composable () -> Unit)? = null,
+    mode: Int = 0
+) {
     TextField( // Custom input field
         leadingIcon = icon, // Icon
         label = { Text(label) }, // Label
         value = textState.value,
-        onValueChange = { textState.value = it },
+        onValueChange = {
+            if (mode == 0) { // If the mode is 0 (text field)
+                textState.value = it
+            }else if (mode == 1) { // If the mode is 1 (float field)
+                try {
+                    textState.value = it.toFloat().toString()
+                } catch (e: Exception) {
+                    textState.value = ""
+                }
+            }
+                        },
         modifier = Modifier.fillMaxWidth() // Full width
     )
 }
