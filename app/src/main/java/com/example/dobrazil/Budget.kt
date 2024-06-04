@@ -154,19 +154,18 @@ fun Budget(
 
                 /*------------------------------- Content -------------------------------*/
                 var expensesMutable = remember { mutableStateOf(listOf<ExpenseEntity>()) }
+                var profilesMutable = remember { mutableStateOf(listOf<ProfilEntity>()) }
 
 
                 LaunchedEffect(Dispatchers.Main) {
                     val event = async {eventViewModel.getByTitle(eventTitle)}.await()
                     val expenses = async {expenseViewModel.getAllExpenseTargetEvent(event.idEvent!!)}.await()
+                    val profiles = async {profilViewModel.getAll()}.await()
 
                     withContext(Dispatchers.Main) {
                         expensesMutable.value = expenses
+                        profilesMutable.value = profiles
                     }
-                }
-
-                for (expense in expensesMutable.value) {
-                    Log.d("Expense", expense.toString())
                 }
 
                 if (page.value == 0) { // Show the history of finance
@@ -187,7 +186,7 @@ fun Budget(
                             .padding(8.dp)
 
                     ){
-                        items(calculateBalances(expensesMutable.value, profilViewModel).toList()) { (key, value) ->
+                        items(calculateBalances(expensesMutable.value, profilesMutable.value).toList()) { (key, value) ->
                             Balance(
                                 name = key,
                                 balance = value
@@ -216,31 +215,25 @@ fun Budget(
  * @param expenses : List<ExpenseEntity>, the list of expenses
  * @param profilViewModel : profilViewModel, the view model of the profil
  */
-fun calculateBalances(
-    expenses: List<ExpenseEntity>,
-    profilViewModel: profilViewModel
-): Map<String, Float> {
-    val balances = mutableMapOf<String, Float>() // Create a map of balance
+fun calculateBalances(expenses: List<ExpenseEntity>, profiles: List<ProfilEntity>): Map<String, Float> {
+    val balances = mutableMapOf<String, Float>()
 
-    for (expense in expenses) { // For each expense
-        var payerName: String = "" // Name of the payer
-        var financerName: String = "" // Name of the financer
+    // Initialize balances
+    profiles.forEach { profile ->
+        balances[profile.username] = 0f
+    }
 
-        profilViewModel.viewModelScope.launch(Dispatchers.Main) {  // Launch the coroutine
-            val payerE = async { profilViewModel.getById(expense.idPayer)}.await() // Get the payer
-            val financerE = async { profilViewModel.getById(expense.idFinancer)}.await() // Get the financer
+    expenses.forEach { expense ->
+        val payer = profiles.find { it.idProfil == expense.idPayer }
+        val financer = profiles.find { it.idProfil == expense.idFinancer }
 
-            withContext(Dispatchers.Main) { // Change the context
-                payerName = payerE.username // Set the payer name
-                financerName = financerE.username  // Set the financer name
-            }
+        payer?.let {
+            balances[it.username] = balances[it.username]!! + expense.amount
         }
 
-        // Subtract the expense amount from the payer's balance
-        balances[payerName] = balances.getOrDefault(payerName, 0f) - expense.amount
-
-        // Add the expense amount to the financer's balance
-        balances[financerName] = balances.getOrDefault(financerName, 0f) + expense.amount
+        financer?.let {
+            balances[it.username] = balances[it.username]!! - expense.amount
+        }
     }
 
     return balances
@@ -452,36 +445,45 @@ fun Balance(
 
     ) {
 
-        if (balance > 0) { // If the balance is negative
+        if (balance < 0) { // If the balance is negative
             Row (
-                horizontalArrangement = Arrangement.SpaceBetween, // Space the element evenly
+                horizontalArrangement = Arrangement.SpaceEvenly, // Space the element evenly
                 modifier = Modifier
                     .fillMaxWidth() // Fill the entire width of the screen
                     .padding(8.dp)
-                    .border(3.dp, Color(IvoryBorderColor), RoundedCornerShape(8.dp)) // Border
-                    .clip(RoundedCornerShape(8.dp)) // Rounded corner
-                    .background(Color(IvoryColor)), // Background color
             ){
-
                 Text( // Text of the balance
-                    text = name + " " + balance.toString() + "€",
+                    text = balance.toString() + "€",
+                    color = Color.Red,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                Text( // Text of the name
+                    text = name,
                     color = Color.Red,
                     modifier = Modifier.padding(8.dp)
                 )
 
                 Spacer(modifier = Modifier.padding(1.dp)) // Space between the text
-
-                Spacer(modifier = Modifier.padding(1.dp)) // Space between the text
             }
 
         } else { // If the balance is positive
-            Row {
+            Row (
+                horizontalArrangement = Arrangement.SpaceEvenly, // Space the element evenly
+                modifier = Modifier
+                    .fillMaxWidth() // Fill the entire width of the screen
+                    .padding(8.dp)
+            ){
                 Spacer(modifier = Modifier.padding(1.dp)) // Space between the text
 
-                Spacer(modifier = Modifier.padding(1.dp)) // Space between the text
+                Text( // Text of the name
+                    text = name,
+                    color = Color.Green,
+                    modifier = Modifier.padding(8.dp)
+                )
 
                 Text( // Text of the balance
-                    text = name + " " + balance.toString() + "€",
+                    text = balance.toString() + "€",
                     color = Color.Green,
                     modifier = Modifier.padding(8.dp)
                 )

@@ -90,7 +90,7 @@ fun Dashboard(
                 eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: ""
             )
         }
-        composable("BudgetScreen/{eventTitle}",
+        composable("BudgetScreen/{eventTitle}", // Fini
             arguments = listOf(navArgument("eventTitle") { type = NavType.StringType })
         ) {backstackEntry ->
             Budget(

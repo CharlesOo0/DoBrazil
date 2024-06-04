@@ -21,8 +21,8 @@ class profilViewModel @Inject public constructor(
     /**
      * @brief Get all Profil
      */
-    fun getAll(){
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun getAll() : List<ProfilEntity> {
+        return withContext(Dispatchers.IO) {
             repository.getAll()
         }
     }
