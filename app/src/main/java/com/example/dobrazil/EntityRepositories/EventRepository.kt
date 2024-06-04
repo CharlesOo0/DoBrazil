@@ -33,4 +33,10 @@ class EventRepository @Inject constructor(
 
     // Get events where not invited or creator
     fun getEventsWhereNotInvitedOrCreator(profilId: Int) = dao.getEventsWhereNotInvitedOrCreator(profilId)
+
+    // Get events made by a user
+    fun getEventsByHost(profilId: Int) = dao.getEventsByHost(profilId)
+
+    // Get events where user is invited
+    fun getEventsWhereUserIsInvited(profilId: Int) = dao.getEventsWhereUserIsInvited(profilId)
 }

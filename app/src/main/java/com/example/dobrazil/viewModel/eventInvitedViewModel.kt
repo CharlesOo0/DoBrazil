@@ -108,4 +108,12 @@ class eventInvitedViewModel @Inject public constructor(
         }
     }
 
+    /**
+     * @brief Delete with event id
+     */
+    fun deleteWithEventId(eventId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWithEventId(eventId)
+        }
+    }
 }

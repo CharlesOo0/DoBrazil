@@ -32,4 +32,20 @@ interface EventFinanciersCrossRefDao {
     // Get an event-financier cross reference by id
     @Query("SELECT * FROM EventFinanciersCrossRef WHERE eventId = :id")
     fun getById(id : Int): EventFinanciersCrossRef
+
+    // Delete an event-financier cross reference with an event id and a financier id
+    @Query("DELETE FROM EventFinanciersCrossRef WHERE eventId = :eventId AND profilId = :financierId")
+    fun deleteWithEventIdAndFinancierId(eventId: Int, financierId: Int)
+
+    // Delete every event-financier cross reference with an event id
+    @Query("DELETE FROM EventFinanciersCrossRef WHERE eventId = :eventId")
+    fun deleteWithEventId(eventId: Int)
+
+    // Insert with username of financer and event id
+    @Query("INSERT INTO EventFinanciersCrossRef (eventId, profilId) VALUES (:eventId, (SELECT idProfil FROM ProfilEntity WHERE username = :financierUsername))")
+    fun insertWithUsernames(eventId: Int, financierUsername: String)
+
+    // Delete with username of financer and event id
+    @Query("DELETE FROM EventFinanciersCrossRef WHERE eventId = :eventId AND profilId = (SELECT idProfil FROM ProfilEntity WHERE username = :financierUsername)")
+    fun deleteWithUsernames(eventId: Int, financierUsername: String)
 }

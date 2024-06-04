@@ -4,6 +4,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import com.example.appwithroomuv.R
+import com.example.dobrazil.Entity.EventEntity
 import com.example.dobrazil.data.LocalStorage
 
 // Colors
@@ -17,6 +18,7 @@ const val BeigeVariant = 0xFFF7CDAA
 
 // Diverse
 const val Opacity = 0.5f
+val nullEvent : EventEntity = EventEntity(0, "", "", 0, "", "", "", false, false)
 
 // Fonts
 val poppins = FontFamily(

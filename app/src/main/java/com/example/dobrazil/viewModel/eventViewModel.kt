@@ -89,4 +89,22 @@ class eventViewModel @Inject public constructor(
             repository.getEventsWhereNotInvitedOrCreator(profilId)
         }
     }
+
+    /**
+     * @brief Get events made by a user
+     */
+    suspend fun getEventsByHost(profilId: Int): List<EventEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.getEventsByHost(profilId)
+        }
+    }
+
+    /**
+     * @brief Get events where user is invited
+     */
+    suspend fun getEventsWhereUserIsInvited(profilId: Int): List<EventEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.getEventsWhereUserIsInvited(profilId)
+        }
+    }
 }

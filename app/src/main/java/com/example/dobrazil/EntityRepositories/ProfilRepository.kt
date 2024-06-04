@@ -42,4 +42,13 @@ class ProfilRepository @Inject constructor(
 
     // Search not friend profil
     fun searchNotFriendProfil(search: String, idProfil: Int) = dao.searchNotFriendProfil(search, idProfil)
+
+    // Search not invited profil
+    fun searchNotInvitedProfil(search: String, idProfil: Int, idEvent: Int) = dao.searchNotInvitedProfil(search, idProfil, idEvent)
+
+    // Get friends profil
+    fun getFriendsProfil(idProfil: Int) = dao.getFriendsProfil(idProfil)
+
+    // Get peoples invited to an event
+    fun getInvitedProfil(idEvent: Int) = dao.getInvitedProfil(idEvent)
 }

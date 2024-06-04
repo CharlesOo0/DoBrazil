@@ -41,6 +41,7 @@ interface EventDao {
     @Query("SELECT * FROM EventEntity WHERE title = :title")
     fun checkTitle(title: String): EventEntity?
 
+    // Get events where not invited or creator
     @Query("""
     SELECT * FROM EventEntity 
     WHERE idEvent NOT IN (
@@ -48,4 +49,18 @@ interface EventDao {
     ) AND idHost != :profilId
 """)
     fun getEventsWhereNotInvitedOrCreator(profilId: Int): List<EventEntity>
+
+    // Get events made by a user
+    @Query("SELECT * FROM EventEntity WHERE idHost = :profilId")
+    fun getEventsByHost(profilId: Int): List<EventEntity>
+
+    // Get events where user is invited
+    @Query("""
+    SELECT * FROM EventEntity
+    WHERE idEvent IN (
+        SELECT eventId FROM EventInvitedCrossRef WHERE profilId = :profilId
+    )
+    AND idHost != :profilId
+""")
+    fun getEventsWhereUserIsInvited(profilId: Int): List<EventEntity>
 }

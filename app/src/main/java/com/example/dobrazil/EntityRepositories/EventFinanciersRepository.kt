@@ -24,4 +24,16 @@ class EventFinanciersRepository @Inject constructor(
 
     // Get all events by status
     fun getById(id : Int) = dao.getById(id)
+
+    // Delete with event id and financier id
+    fun deleteWithEventIdAndFinancierId(eventId: Int, financierId: Int) = dao.deleteWithEventIdAndFinancierId(eventId, financierId)
+
+    // Delete every event-financier cross reference with a specific event id
+    fun deleteWithEventId(eventId: Int) = dao.deleteWithEventId(eventId)
+
+    // Insert with username of financer and event id
+    fun insertWithUsernames(eventId: Int, financierUsername: String) = dao.insertWithUsernames(eventId, financierUsername)
+
+    // Delete with username of financer and event id
+    fun deleteWithUsernames(eventId: Int, financierUsername: String) = dao.deleteWithUsernames(eventId, financierUsername)
 }

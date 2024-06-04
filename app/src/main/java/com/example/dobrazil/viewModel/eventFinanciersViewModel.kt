@@ -61,4 +61,40 @@ class eventFinanciersViewModel @Inject public constructor(
             repository.update(event)
         }
     }
+
+    /**
+     * @brief Delete with event id and financier id
+     */
+    fun deleteWithEventIdAndFinancierId(eventId: Int, financierId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWithEventIdAndFinancierId(eventId, financierId)
+        }
+    }
+
+    /**
+     * @brief Delete with event id
+     */
+    fun deleteWithEventId(eventId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWithEventId(eventId)
+        }
+    }
+
+    /**
+     * @brief Insert with username of financer and event id
+     */
+    fun insertWithUsernames(eventId: Int, financierUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertWithUsernames(eventId, financierUsername)
+        }
+    }
+
+    /**
+     * @brief Delete with username of financer and event id
+     */
+    fun deleteWithUsernames(eventId: Int, financierUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWithUsernames(eventId, financierUsername)
+        }
+    }
 }

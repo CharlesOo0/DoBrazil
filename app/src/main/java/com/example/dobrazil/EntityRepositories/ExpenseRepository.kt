@@ -24,4 +24,7 @@ class ExpenseRepository @Inject constructor(
 
     // Get all expenses by status
     fun getById(id : Int) = dao.getById(id)
+
+    // Delete all expenses of a specific event and profil
+    suspend fun deleteAllExpenseTargetEventProfil(idProfil: Int, idEvent: Int) = dao.deleteAllExpenseTargetEventProfil(idProfil, idEvent)
 }

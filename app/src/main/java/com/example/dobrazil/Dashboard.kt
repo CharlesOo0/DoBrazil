@@ -36,32 +36,85 @@ fun Dashboard(
 
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable("LoginScreen") { // Fini
-            LoginScreen(navController = navController, profilViewModel = profiViewModel, localStorage)
+            LoginScreen(
+                navController = navController,
+                profilViewModel = profiViewModel,
+                localStorage
+            )
         }
-        composable("HomeScreen") {
-            Home(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, eventInvitedViewModel = eventInvitedViewModel, localStorage = localStorage)
+        composable("HomeScreen") { // Fini
+            Home(
+                navController = navController,
+                eventViewModel = eventViewModel,
+                profilViewModel = profiViewModel,
+                eventInvitedViewModel = eventInvitedViewModel,
+                eventFinanciersViewModel = eventFinanciersViewModel,
+                localStorage = localStorage
+            )
         }
         composable("CreateEventScreen") {// Fini
-            CreateEvent(navController = navController, eventViewModel = eventViewModel, profilViewModel = profiViewModel, favoriteViewModel, eventInvitedViewModel, localStorage)
+            CreateEvent(
+                navController = navController,
+                eventViewModel = eventViewModel,
+                profilViewModel = profiViewModel,
+                favoriteViewModel,
+                eventInvitedViewModel,
+                localStorage
+            )
         }
         composable("ChoseInvitedScreen/{eventTitle}", // Fini
             arguments = listOf(navArgument("eventTitle") { type = NavType.StringType })
         ) {backstackEntry ->
-            ChoseInvited(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, eventInvitedViewModel = eventInvitedViewModel, eventViewModel = eventViewModel, localStorage = localStorage, eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: "")
+            ChoseInvited(
+                navController = navController,
+                profilViewModel = profiViewModel,
+                favoriteViewModel = favoriteViewModel,
+                eventInvitedViewModel = eventInvitedViewModel,
+                eventViewModel = eventViewModel,
+                localStorage = localStorage,
+                eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: ""
+            )
         }
-        composable("ManageEventScreen/{eventTitle}",
+        composable("ManageEventScreen/{eventTitle}", // Fini
             arguments = listOf(navArgument("eventTitle") { type = NavType.StringType })
         ) {backstackEntry ->
-            ManageEvent(navController = navController, eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: "")
+            ManageEvent(
+                navController = navController,
+                eventViewModel = eventViewModel,
+                eventInvitedViewModel = eventInvitedViewModel,
+                favoriteViewModel = favoriteViewModel,
+                profilViewModel = profiViewModel,
+                expenseViewModel = expenseViewModel,
+                eventFinanciersViewModel = eventFinanciersViewModel,
+                localStorage = localStorage,
+                eventTitle = backstackEntry.arguments?.getString("eventTitle") ?: ""
+            )
         }
         composable("BudgetScreen") {
-            Budget(navController = navController)
+            Budget(
+                navController = navController
+            )
         }
         composable("SearchFriendScreen") { // Fini
-            SearchFriend(navController = navController, profilViewModel = profiViewModel, favoriteViewModel = favoriteViewModel, eventInvitedViewModel = eventInvitedViewModel, eventViewModel = eventViewModel, localStorage = localStorage)
+            SearchFriend(
+                navController = navController,
+                profilViewModel = profiViewModel,
+                favoriteViewModel = favoriteViewModel,
+                eventInvitedViewModel = eventInvitedViewModel,
+                eventViewModel = eventViewModel,
+                localStorage = localStorage
+            )
         }
-        composable("ProfilScreen") {
-            Profil(navController = navController, profilViewModel = profiViewModel, localStorage)
+        composable("ProfilScreen") { // Fini
+            Profil(
+                navController = navController,
+                profilViewModel = profiViewModel,
+                eventViewModel = eventViewModel,
+                eventInvitedViewModel = eventInvitedViewModel,
+                favoriteViewModel = favoriteViewModel,
+                eventFinanciersViewModel = eventFinanciersViewModel,
+                localStorage = localStorage
+            )
         }
     }
 

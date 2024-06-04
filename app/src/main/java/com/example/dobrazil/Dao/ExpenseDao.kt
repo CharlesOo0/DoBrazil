@@ -32,4 +32,8 @@ interface ExpenseDao {
     // Get an expense by its id
     @Query("SELECT * FROM ExpenseEntity WHERE idExpense = :id")
     fun getById(id: Int): ExpenseEntity
+
+    // Delete every expenses of a specific event and profil
+    @Query("DELETE FROM ExpenseEntity WHERE  idEvent = :idEvent AND idFinancer = :idProfil")
+    fun deleteAllExpenseTargetEventProfil(idProfil: Int, idEvent: Int)
 }

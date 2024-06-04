@@ -13,6 +13,7 @@ import java.util.Date
  * @param date: Date, date of the expense
  * @param idPayer: Int, foreign key to the Profil table
  * @param idFinancer: Int, foreign key to the Profil table
+ * @param idEvent: Int, foreign key to the Event table
  */
 @Entity
 data class ExpenseEntity(
@@ -22,5 +23,6 @@ data class ExpenseEntity(
     val amount: Float,
     val date: String,
     val idPayer: Int,
-    val idFinancer: Int
+    val idFinancer: Int,
+    val idEvent: Int
 )

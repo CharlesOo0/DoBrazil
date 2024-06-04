@@ -117,4 +117,31 @@ class profilViewModel @Inject public constructor(
         }
     }
 
+    /**
+     * @brief Get friends profil
+     */
+    suspend fun getFriendsProfil(idProfil: Int): List<ProfilEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.getFriendsProfil(idProfil)
+        }
+    }
+
+    /**
+     * @brief Get peoples invited to an event
+     */
+    suspend fun getInvitedProfil(idEvent: Int): List<ProfilEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.getInvitedProfil(idEvent)
+        }
+    }
+
+    /**
+     * @brief Search not invited profil
+     */
+    suspend fun searchNotInvitedProfil(search: String, idProfil: Int, idEvent: Int): List<ProfilEntity> {
+        return withContext(Dispatchers.IO) {
+            repository.searchNotInvitedProfil(search, idProfil, idEvent)
+        }
+    }
+
 }

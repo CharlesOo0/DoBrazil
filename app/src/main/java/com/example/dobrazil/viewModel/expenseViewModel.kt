@@ -61,4 +61,13 @@ class expenseViewModel @Inject public constructor(
             repository.update(event)
         }
     }
+
+    /**
+     * @brief Delete all Expense of a specific event and profil
+     */
+    fun deleteAllExpenseTargetEventProfil(idProfil: Int, idEvent: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllExpenseTargetEventProfil(idProfil, idEvent)
+        }
+    }
 }

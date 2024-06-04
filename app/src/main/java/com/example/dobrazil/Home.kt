@@ -53,7 +53,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.appwithroomuv.R
 import com.example.dobrazil.Entity.EventEntity
+import com.example.dobrazil.Entity.EventInvitedCrossRef
 import com.example.dobrazil.data.LocalStorage
+import com.example.dobrazil.viewModel.eventFinanciersViewModel
 import com.example.dobrazil.viewModel.eventInvitedViewModel
 import com.example.dobrazil.viewModel.eventViewModel
 import com.example.dobrazil.viewModel.profilViewModel
@@ -74,6 +76,7 @@ fun Home(
     eventViewModel: eventViewModel,
     profilViewModel: profilViewModel,
     eventInvitedViewModel: eventInvitedViewModel,
+    eventFinanciersViewModel: eventFinanciersViewModel,
     localStorage: LocalStorage
 ){
     val scrollState = rememberScrollState()
@@ -133,6 +136,7 @@ fun Home(
                             eventViewModel = eventViewModel,
                             profilViewModel = profilViewModel,
                             eventInvitedViewModel = eventInvitedViewModel,
+                            financiersViewModel = eventFinanciersViewModel,
                             localStorage = localStorage,
                             eventId = listEventMutable.get(index).idEvent!!,
                             forProfil = false,
@@ -197,6 +201,7 @@ fun Event(
     eventViewModel: eventViewModel,
     profilViewModel: profilViewModel,
     eventInvitedViewModel: eventInvitedViewModel,
+    financiersViewModel: eventFinanciersViewModel,
     localStorage: LocalStorage,
     eventId: Int = 0,
     forProfil: Boolean = true,
@@ -266,10 +271,20 @@ fun Event(
                 }
                 Text(numberPersMutable.value.toString() + " Pers") // Number of person going to the event
 
-                if (forProfil && eventMutable.idHost == localStorage.idUser) { // If the event is for the profil page
+                if (forProfil) { // If the event is for the profil page
+
                     Box {
-                        DropDownMenu(navController = navController, eventViewModel = eventViewModel, event = eventMutable, isCreator = true)
+                        DropDownMenu(
+                            navController = navController,
+                            eventViewModel = eventViewModel,
+                            event = eventMutable,
+                            isCreator = if (localStorage.idUser == eventMutable.idHost) true else false,
+                            eventInvitedViewModel = eventInvitedViewModel,
+                            financiersViewModel = financiersViewModel,
+                            localStorage = localStorage
+                        )
                     }
+
                 } else { // If the event is not for the profil page
                     Icon ( // Icon to participate to the event
                         Icons.Default.Add,
@@ -277,7 +292,10 @@ fun Event(
                         modifier = Modifier
                             .size(20.dp)
                             .clickable { // When the user click on the icon
-                                eventInvitedViewModel.insertWithUsernames(eventId, localStorage.username)
+                                eventInvitedViewModel.insertWithUsernames(
+                                    eventId,
+                                    localStorage.username
+                                )
                             }
                     )
                 }
@@ -322,6 +340,9 @@ fun Event(
  * @param isCreator : Boolean that represent if the user is the creator of the event
  * @param isEvent : Boolean that represent if the dropDownMenu is for an event
  * @param navController : NavController that allow to navigate between the screen
+ * @param eventViewModel : eventViewModel that allow to interact with the event
+ * @param event : EventEntity that represent the event
+ * @param localStorage : LocalStorage that allow to interact with the local storage
  */
 @Composable
 fun DropDownMenu(
@@ -329,7 +350,10 @@ fun DropDownMenu(
     isEvent : Boolean = true,
     navController: NavController? = null,
     eventViewModel: eventViewModel,
-    event: EventEntity
+    eventInvitedViewModel: eventInvitedViewModel,
+    financiersViewModel: eventFinanciersViewModel,
+    event: EventEntity,
+    localStorage: LocalStorage
 ){
     var expanded by remember { mutableStateOf(false) }
 
@@ -346,23 +370,28 @@ fun DropDownMenu(
             onDismissRequest = { expanded = false } // Dismiss the DropDownMenu when the user click outside of it
         ) {
             if (isEvent) { // If the DropDownMenu is for an event
+
                 if (isCreator) {  // If the user is the creator of the event
                     DropdownMenuItem( // Show the option to manage the event
                         text = { Text("Gerer") },
-                        onClick = { navController?.navigate("ManageEvent") } /* TODO Make it navigate to the correct Event */
+                        onClick = { navController?.navigate("ManageEventScreen/${event.title}") }
                     )
                 }
+
                 DropdownMenuItem( // Show the option to delete/quit the event
                     text = { Text("Supprimer/Quitter") },
-                    onClick = { /* TODO */ }
-                )
-            } else {
-                DropdownMenuItem( // Show the option to delete the people from the favorite
-                    text = { Text("Supprimer") },
-                    onClick = { /* TODO */ }
+                    onClick = {
+                        if (isCreator) { // If the user is the creator of the event
+                            eventViewModel.delete(event)
+                            eventInvitedViewModel.deleteWithEventId(event.idEvent!!)
+                            financiersViewModel.deleteWithEventId(event.idEvent)
+                        } else { // If the user is not the creator of the event
+                            var eventInvited = EventInvitedCrossRef(event.idEvent!!, localStorage.idUser!!)
+                            eventInvitedViewModel.delete(eventInvited)
+                        }
+                    }
                 )
             }
-
         }
     }
 }
@@ -374,7 +403,7 @@ fun DropDownMenu(
 @Composable
 fun HomePreview() {
     DoBrazilTheme {
-        Home(profilViewModel = hiltViewModel(), eventViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), localStorage = LocalStorage())
+        Home(profilViewModel = hiltViewModel(), eventViewModel = hiltViewModel(), eventFinanciersViewModel = hiltViewModel(), eventInvitedViewModel = hiltViewModel(), localStorage = LocalStorage())
     }
 }
 

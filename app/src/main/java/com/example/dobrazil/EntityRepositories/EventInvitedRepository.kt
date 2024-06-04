@@ -39,4 +39,7 @@ class EventInvitedRepository @Inject constructor(
 
     // Give the number of person that are going to an event
     fun getNumberOfPersonGoing(eventId: Int) = dao.getNumberOfInvitedPeople(eventId)
+
+    // Delete every event-invited cross reference with a specific event id
+    fun deleteWithEventId(eventId: Int) = dao.deleteWithEventId(eventId)
 }

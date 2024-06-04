@@ -17,7 +17,7 @@ import com.example.dobrazil.Entity.*
     EventInvitedCrossRef::class,
     EventFinanciersCrossRef::class,
     FavoriteRel::class
-                     ], version = 8)
+                     ], version = 9)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profilDao(): ProfilDao // Dao for the Profil table
     abstract fun eventDao(): EventDao // Dao for the Event table
